@@ -32,7 +32,36 @@ func main() {
 
 	fmt.Printf("%v\n", coin)
 
-	doSomething()
+	lev, err := client.Leverage(5)
+	if err != nil {
+		client.Logger.Error(err)
+    }
+
+    fmt.Printf("%v\n", lev)
+    // -> success nil, false err
+
+    o, err := client.Order(&RequestForOrder{
+    Market: "ETH-PERP",
+    Type:   LIMIT,
+    Side:   BUY,
+    Price:  1,
+    Size:   1,
+    // and more options
+	})
+	if err != nil {
+		client.Logger.Error(err)
+    }
+    
+
+	ok, err := client.CancelByID(o.ID)
+	if err != nil {
+		client.Logger.Error(err)
+    }
+
+    fmt.Println(ok)
+    // ok is status comment
+
+    
 }
 ```
 
