@@ -6,6 +6,16 @@ FTX exchange API version2, renew at 2020/04.
 
 go-ftx is a go client library for [FTX API Document](https://docs.ftx.com).
 
+**Supported**
+- [x] Public & Private
+- [x] Orders
+- [x] Leveraged tokens
+- [x] Options
+- [x] Websocket
+
+**Not Supported**
+- [ ] FIX API
+
 ## Installation
 
 ```
