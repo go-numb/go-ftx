@@ -33,7 +33,7 @@ func main() {
 	// account informations
 	info, err := c.Information(&account.RequestForInformation{})
 	if err != nil {
-	   log.Fatal(err)
+		log.Fatal(err)
 	}
 
 	fmt.Printf("%v\n", info)
@@ -41,14 +41,14 @@ func main() {
 	lev, err := client.Leverage(5)
 	if err != nil {
 		log.Fatal(err)
-    }
+	}
 
 	fmt.Printf("%v\n", lev)
 	
 	market, err := c.Markets(&markets.RequestForMarkets{})
 	if err != nil {
 		log.Fatal(err)
-    }
+	}
 
 	// products List
 	fmt.Printf("%+v\n", strings.Join(res.List(), "\n"))
@@ -68,7 +68,7 @@ func main() {
 		fmt.Printf("%s			%s		%s\n", humanize.Commaf(v.Rate), v.Future, v.Time.String())
 	}
 
-    o, err := c.PlaceOrder(&orders.RequestForPlaceOrder{
+	o, err := c.PlaceOrder(&orders.RequestForPlaceOrder{
 		Type:   types.LIMIT,
 		Market: "BTC-PERP",
 		Side:   types.BUY,
@@ -82,7 +82,7 @@ func main() {
 	})
 	if err != nil {
 		client.Logger.Error(err)
-    }
+	}
     
 
 	ok, err := client.Cancel(&orders.RequestForCancelByID{
@@ -93,10 +93,10 @@ func main() {
 	})
 	if err != nil {
 		log.Fatal(err)
-    }
+	}
 
-    fmt.Println(ok)
-    // ok is status comment
+	fmt.Println(ok)
+	// ok is status comment
    
 }
 ```
