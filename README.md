@@ -12,6 +12,7 @@ go-ftx is a go client library for [FTX API Document](https://docs.ftx.com).
 - [x] Leveraged tokens
 - [x] Options
 - [x] Websocket
+- [x] SubAccounts 
 
 **Not Supported**
 - [ ] FIX API
@@ -38,7 +39,28 @@ import (
 
 
 func main() {
+	// Only main account
 	client := rest.New(auth.New("<key>", "<secret>"))
+
+	// or 
+	// UseSubAccounts
+	clientWithSubAccounts := rest.New(
+		auth.New(
+			"<key>",
+			"<secret>",
+			rest.SubAccount{
+				UUID: 1,
+				NickName: "subaccount_1",
+			},
+			rest.SubAccount{
+				UUID: 2,
+				NickName: "subaccount_2",
+			},
+			// many....
+	))
+	// swich subaccount
+	clientWithSubAccounts.Auth.UseSubAccountID(1) // or 2... this number is key in map[int]SubAccount
+	
 
 	// account informations
 	info, err := c.Information(&account.RequestForInformation{})

@@ -5,6 +5,7 @@ import (
 	"github.com/go-numb/go-ftx/rest/private/fills"
 	"github.com/go-numb/go-ftx/rest/private/funding"
 	"github.com/go-numb/go-ftx/rest/private/orders"
+	"github.com/go-numb/go-ftx/rest/private/subaccount"
 	"github.com/go-numb/go-ftx/rest/private/wallet"
 )
 
@@ -201,6 +202,57 @@ func (p *Client) Fills(req *fills.Request) (*fills.Response, error) {
 
 func (p *Client) Funding(req *funding.Request) (*funding.Response, error) {
 	results := new(funding.Response)
+	if err := p.request(req, results); err != nil {
+		return nil, err
+	}
+	return results, nil
+}
+
+/*
+	# SubAccount
+*/
+func (p *Client) SubAccounts(req *subaccount.RequestForSubAccounts) (*subaccount.ResponseForSubAccounts, error) {
+	results := new(subaccount.ResponseForSubAccounts)
+	if err := p.request(req, results); err != nil {
+		return nil, err
+	}
+	return results, nil
+}
+
+func (p *Client) CreateSubAccount(req *subaccount.RequestForCreateSubAccount) (*subaccount.ResponseForCreateSubAccount, error) {
+	results := new(subaccount.ResponseForCreateSubAccount)
+	if err := p.request(req, results); err != nil {
+		return nil, err
+	}
+	return results, nil
+}
+
+func (p *Client) ChangeSubAccount(req *subaccount.RequestForChangeSubAccount) (*subaccount.ResponseForChangeSubAccount, error) {
+	results := new(subaccount.ResponseForChangeSubAccount)
+	if err := p.request(req, results); err != nil {
+		return nil, err
+	}
+	return results, nil
+}
+
+func (p *Client) DeleteSubAccount(req *subaccount.RequestForDeleteSubAccount) (*subaccount.ResponseForDeleteSubAccount, error) {
+	results := new(subaccount.ResponseForDeleteSubAccount)
+	if err := p.request(req, results); err != nil {
+		return nil, err
+	}
+	return results, nil
+}
+
+func (p *Client) BalanceSubAccount(req *subaccount.RequestForBalanceSubAccount) (*subaccount.ResponseForBalanceSubAccount, error) {
+	results := new(subaccount.ResponseForBalanceSubAccount)
+	if err := p.request(req, results); err != nil {
+		return nil, err
+	}
+	return results, nil
+}
+
+func (p *Client) TransferSubAccount(req *subaccount.RequestForTransferSubAccount) (*subaccount.ResponseForTransferSubAccount, error) {
+	results := new(subaccount.ResponseForTransferSubAccount)
 	if err := p.request(req, results); err != nil {
 		return nil, err
 	}

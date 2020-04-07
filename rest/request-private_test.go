@@ -2,6 +2,7 @@ package rest_test
 
 import (
 	"fmt"
+	"net/url"
 	"os"
 	"testing"
 
@@ -12,11 +13,16 @@ import (
 	"github.com/go-numb/go-ftx/rest"
 	"github.com/go-numb/go-ftx/rest/private/account"
 	"github.com/go-numb/go-ftx/rest/private/fills"
-	"github.com/go-numb/go-ftx/rest/private/funding"
 	"github.com/go-numb/go-ftx/rest/private/orders"
+	"github.com/go-numb/go-ftx/rest/private/subaccount"
 	"github.com/go-numb/go-ftx/rest/private/wallet"
 	"github.com/go-numb/go-ftx/types"
 )
+
+func TestURIEncode(t *testing.T) {
+	nickname := "subaccount_name[ハロ]"
+	fmt.Printf("%+v\n", url.QueryEscape(nickname))
+}
 
 func TestInformation(t *testing.T) {
 	c := rest.New(auth.New(os.Getenv("FTXKEY"), os.Getenv("FTXSECRET")))
@@ -280,11 +286,71 @@ func TestFills(t *testing.T) {
 	fmt.Printf("%+v\n", res)
 }
 
-func TestFunding(t *testing.T) {
+/*
+	# SubAccount
+*/
+func TestSubAccounts(t *testing.T) {
 	c := rest.New(auth.New(os.Getenv("FTXKEY"), os.Getenv("FTXSECRET")))
 
-	res, err := c.Funding(&funding.Request{
-		ProductCode: "BTC-PERP",
+	res, err := c.SubAccounts(&subaccount.RequestForSubAccounts{})
+	assert.NoError(t, err)
+
+	fmt.Printf("%+v\n", res)
+}
+
+func TestCreateSubAccount(t *testing.T) {
+	c := rest.New(auth.New(os.Getenv("FTXKEY"), os.Getenv("FTXSECRET")))
+
+	res, err := c.CreateSubAccount(&subaccount.RequestForCreateSubAccount{
+		NickName: "testuse",
+	})
+	assert.NoError(t, err)
+
+	fmt.Printf("%+v\n", res)
+}
+
+func TestChangeSubAccount(t *testing.T) {
+	c := rest.New(auth.New(os.Getenv("FTXKEY"), os.Getenv("FTXSECRET")))
+
+	res, err := c.ChangeSubAccount(&subaccount.RequestForChangeSubAccount{
+		NickName:    "testuse",
+		NewNickname: "new_testuse",
+	})
+	assert.NoError(t, err)
+
+	fmt.Printf("%+v\n", res)
+}
+
+func TestDeleteSubAccount(t *testing.T) {
+	c := rest.New(auth.New(os.Getenv("FTXKEY"), os.Getenv("FTXSECRET")))
+
+	res, err := c.DeleteSubAccount(&subaccount.RequestForDeleteSubAccount{
+		NickName: "testuse",
+	})
+	assert.NoError(t, err)
+
+	fmt.Printf("%+v\n", res)
+}
+
+func TestBalanceSubAccount(t *testing.T) {
+	c := rest.New(auth.New(os.Getenv("FTXKEY"), os.Getenv("FTXSECRET")))
+
+	res, err := c.BalanceSubAccount(&subaccount.RequestForBalanceSubAccount{
+		NickName: "testuse",
+	})
+	assert.NoError(t, err)
+
+	fmt.Printf("%+v\n", res)
+}
+
+func TestTransferSubAccount(t *testing.T) {
+	c := rest.New(auth.New(os.Getenv("FTXKEY"), os.Getenv("FTXSECRET")))
+
+	res, err := c.TransferSubAccount(&subaccount.RequestForTransferSubAccount{
+		Coin:        "BTC",
+		Size:        2.0,
+		Source:      "main",
+		Destination: "subaccount_1",
 	})
 	assert.NoError(t, err)
 

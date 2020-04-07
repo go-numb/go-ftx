@@ -41,7 +41,7 @@ func (p *Client) newRequest(r Requester) *fasthttp.Request {
 	u.Path = u.Path + r.Path()
 	u.RawQuery = r.Query()
 
-	// fmt.Printf("%+v\n", u.String())
+	fmt.Printf("%+v\n", u.String())
 
 	req := fasthttp.AcquireRequest()
 	req.Header.SetMethod(r.Method())
@@ -57,6 +57,12 @@ func (p *Client) newRequest(r Requester) *fasthttp.Request {
 		req.Header.Set("FTX-KEY", p.Auth.Key)
 		req.Header.Set("FTX-SIGN", p.Auth.Signture(payload))
 		req.Header.Set("FTX-TS", nonce)
+
+		// set id is there UseSubAccountID
+		subaccount := p.Auth.SubAccount()
+		if subaccount.Nickname != "" {
+			req.Header.Set("FTX-SUBACCOUNT", url.QueryEscape(subaccount.Nickname))
+		}
 	}
 
 	return req
