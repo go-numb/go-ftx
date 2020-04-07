@@ -12,7 +12,9 @@ import (
 	"time"
 
 	"github.com/buger/jsonparser"
-	"github.com/go-numb/go-ftx"
+	"github.com/go-numb/go-ftx/rest/private/fills"
+	"github.com/go-numb/go-ftx/rest/private/orders"
+	"github.com/go-numb/go-ftx/rest/public/markets"
 	"github.com/go-numb/go-ftx/types"
 	"github.com/gorilla/websocket"
 )
@@ -42,12 +44,12 @@ type Response struct {
 	Type   int
 	Symbol string
 
-	Ticker    ftx.Ticker
-	Trades    []ftx.Trade
+	Ticker    markets.Ticker
+	Trades    []markets.Trade
 	Orderbook Orderbook
 
-	Orders ftx.Orders
-	Fills  ftx.Fills
+	Orders orders.Order
+	Fills  fills.Fill
 
 	Results error
 }
