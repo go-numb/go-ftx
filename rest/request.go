@@ -41,7 +41,7 @@ func (p *Client) newRequest(r Requester) *fasthttp.Request {
 	u.Path = u.Path + r.Path()
 	u.RawQuery = r.Query()
 
-	fmt.Printf("%+v\n", u.String())
+	// fmt.Printf("%+v\n", u.String())
 
 	req := fasthttp.AcquireRequest()
 	req.Header.SetMethod(r.Method())
@@ -71,7 +71,7 @@ func (c *Client) do(r Requester) (*fasthttp.Response, error) {
 		return nil, err
 	}
 
-	fmt.Printf("%+v\n", string(res.Body()))
+	// fmt.Printf("%+v\n", string(res.Body()))
 	// no usefull headers
 
 	if res.StatusCode() != 200 {
