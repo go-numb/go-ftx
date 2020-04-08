@@ -71,6 +71,7 @@ func (p *Client) newRequest(r Requester) *fasthttp.Request {
 func (c *Client) do(r Requester) (*fasthttp.Response, error) {
 	req := c.newRequest(r)
 
+	// fasthttp for http2.0
 	res := fasthttp.AcquireResponse()
 	err := c.HTTPC.DoTimeout(req, res, c.HTTPTimeout)
 	if err != nil {
