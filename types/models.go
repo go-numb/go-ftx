@@ -13,7 +13,7 @@ const (
 	BUY    = "buy"
 	SELL   = "sell"
 	MARKET = "market"
-	LIMIT  = "buy"
+	LIMIT  = "limit"
 )
 
 type FtxTime struct {
