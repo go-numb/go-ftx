@@ -61,7 +61,7 @@ func (p *Client) newRequest(r Requester) *fasthttp.Request {
 		// set id is there UseSubAccountID
 		subaccount := p.Auth.SubAccount()
 		if subaccount.Nickname != "" {
-			req.Header.Set("FTX-SUBACCOUNT", url.QueryEscape(subaccount.Nickname))
+			req.Header.Set("FTX-SUBACCOUNT", url.PathEscape(subaccount.Nickname))
 		}
 	}
 
