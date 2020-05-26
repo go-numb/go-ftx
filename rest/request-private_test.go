@@ -20,8 +20,8 @@ import (
 )
 
 func TestURIEncode(t *testing.T) {
-	nickname := "subaccount_name[ハロ]"
-	fmt.Printf("%+v\n", url.QueryEscape(nickname))
+	nickname := "subaccount name[ハロ]"
+	fmt.Printf("%+v\n", url.PathEscape(nickname))
 }
 
 func TestInformation(t *testing.T) {
