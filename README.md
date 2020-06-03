@@ -58,11 +58,12 @@ func main() {
 			},
 			// many....
 	))
-	// swich subaccount
+	// switch subaccount
 	clientWithSubAccounts.Auth.UseSubAccountID(1) // or 2... this number is key in map[int]SubAccount
 	
 
 	// account informations
+	// client or clientWithSubAccounts in this time.
 	info, err := c.Information(&account.RequestForInformation{})
 	if err != nil {
 		log.Fatal(err)
@@ -70,7 +71,7 @@ func main() {
 
 	fmt.Printf("%v\n", info)
 
-	lev, err := client.Leverage(5)
+	lev, err := c.Leverage(5)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -83,9 +84,9 @@ func main() {
 	}
 
 	// products List
-	fmt.Printf("%+v\n", strings.Join(res.List(), "\n"))
+	fmt.Printf("%+v\n", strings.Join(market.List(), "\n"))
 	// product ranking by USD
-	fmt.Printf("%+v\n", strings.Join(res.Ranking(markets.ALL), "\n"))
+	fmt.Printf("%+v\n", strings.Join(market.Ranking(markets.ALL), "\n"))
 
 
 	// FundingRate
@@ -95,7 +96,7 @@ func main() {
 	}
 	// Sort by FundingRate & Print
 	// Custom sort
-	sort.Sort(sort.Reverse(res))
+	sort.Sort(sort.Reverse(rates))
 	for _, v := range *res {
 		fmt.Printf("%s			%s		%s\n", humanize.Commaf(v.Rate), v.Future, v.Time.String())
 	}
@@ -117,7 +118,7 @@ func main() {
 	}
     
 
-	ok, err := client.Cancel(&orders.RequestForCancelByID{
+	ok, err := c.Cancel(&orders.RequestForCancelByID{
 		OrderID: "erafa",
 		// either... , prioritize clientID
 		ClientID: "",
