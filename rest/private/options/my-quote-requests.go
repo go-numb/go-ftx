@@ -15,7 +15,7 @@ type MyOpQuote struct {
 	Option struct {
 		Underlying string    `json:"underlying"`
 		Type       string    `json:"type"`
-		Strike     int       `json:"strike"`
+		Strike     float64   `json:"strike"`
 		Expiry     time.Time `json:"expiry"`
 	} `json:"option"`
 	Status         string  `json:"status"`
