@@ -9,7 +9,7 @@ type RequestForMyOpQuoteRequest struct {
 	RequestID int
 }
 
-type ResponseForMyOpQuoteRequest Quote
+type ResponseForMyOpQuoteRequest []Quote
 
 func (req *RequestForMyOpQuoteRequest) Path() string {
 	return fmt.Sprintf("/options/requests/%d/quotes", req.RequestID)
