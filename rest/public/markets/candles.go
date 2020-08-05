@@ -15,8 +15,8 @@ type RequestForCandles struct {
 	// Resolution is sec length, window length in seconds. options: 15, 60(1m), 300(5m), 900(15m), 3600(60m), 14400(4h), 86400(1D)
 	Resolution int   `url:"resolution"`
 	Limit      int   `url:"limit,omitempty"`
-	Start      int64 `url:"start,omitempty"`
-	End        int64 `url:"end,omitempty"`
+	Start      int64 `url:"start_time,omitempty"`
+	End        int64 `url:"end_time,omitempty"`
 }
 
 type ResponseForCandles []Candle
