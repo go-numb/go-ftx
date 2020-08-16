@@ -228,7 +228,7 @@ func ConnectForPrivate(ctx context.Context, ch chan Response, key, secret string
 	defer conn.Close()
 
 	// sign up
-	if err := signeture(conn, key, secret); err != nil {
+	if err := signature(conn, key, secret); err != nil {
 		l.Fatal(err)
 	}
 
@@ -291,7 +291,7 @@ RESTART:
 	return nil
 }
 
-func signeture(conn *websocket.Conn, key, secret string) error {
+func signature(conn *websocket.Conn, key, secret string) error {
 	// key: your API key
 	// time: integer current timestamp (in milliseconds)
 	// sign: SHA256 HMAC of the following string, using your API secret: <time>websocket_login
@@ -306,7 +306,8 @@ func signeture(conn *websocket.Conn, key, secret string) error {
 
 	msec := time.Now().UTC().UnixNano() / int64(time.Millisecond)
 
-	mac := hmac.New(sha256.New, []byte(fmt.Sprintf("%d%s", msec, secret)))
+	mac := hmac.New(sha256.New, []byte(secret))
+	mac.Write([]byte(fmt.Sprintf("%dwebsocket_login", msec)))
 
 	if err := conn.WriteJSON(&requestForPrivate{
 		Op: "login",
