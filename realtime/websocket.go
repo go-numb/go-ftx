@@ -141,97 +141,105 @@ func Connect(ctx context.Context, ch chan Response, channels, symbols []string, 
 	if err != nil {
 		return err
 	}
-	defer conn.Close()
 
 	if err := subscribe(conn, channels, symbols); err != nil {
-		l.Println(err)
 		return err
 	}
-	defer unsubscribe(conn, channels, symbols)
 
 	// ping each 15sec for exchange
 	go ping(conn)
 
-RESTART:
-	for {
-		var res Response
-		_, msg, err := conn.ReadMessage()
-		if err != nil {
-			l.Printf("[ERROR]: msg error: %+v", err)
-			res.Type = ERROR
-			res.Results = fmt.Errorf("%v", err)
-			ch <- res
-			break RESTART
-		}
+	go func() {
+		defer conn.Close()
+		defer unsubscribe(conn, channels, symbols)
 
-		typeMsg, err := jsonparser.GetString(msg, "type")
-		if typeMsg == "error" {
-			l.Printf("[ERROR]: error: %+v", string(msg))
-			res.Type = ERROR
-			res.Results = fmt.Errorf("%v", string(msg))
-			ch <- res
-			break RESTART
-		}
-
-		channel, err := jsonparser.GetString(msg, "channel")
-		if err != nil {
-			l.Printf("[ERROR]: channel error: %+v", string(msg))
-			res.Type = ERROR
-			res.Results = fmt.Errorf("%v", string(msg))
-			ch <- res
-			break RESTART
-		}
-
-		market, err := jsonparser.GetString(msg, "market")
-		if err != nil {
-			l.Printf("[ERROR]: market err: %+v", string(msg))
-			res.Type = ERROR
-			res.Results = fmt.Errorf("%v", string(msg))
-			ch <- res
-			break RESTART
-		}
-
-		res.Symbol = market
-
-		data, _, _, err := jsonparser.Get(msg, "data")
-		if err != nil {
-			if isSubscribe, _ := jsonparser.GetString(msg, "type"); isSubscribe == "subscribed" {
-				l.Printf("[SUCCESS]: %s %+v", isSubscribe, string(msg))
-				continue
-			}
-			return fmt.Errorf("[ERROR]: data err: %+v %s", err, string(msg))
-		}
-
-		switch channel {
-		case "ticker":
-			res.Type = TICKER
-			if err := json.Unmarshal(data, &res.Ticker); err != nil {
-				l.Printf("[WARN]: cant unmarshal ticker %+v", err)
-				continue
+	RESTART:
+		for {
+			var res Response
+			_, msg, err := conn.ReadMessage()
+			if err != nil {
+				l.Printf("[ERROR]: msg error: %+v", err)
+				res.Type = ERROR
+				res.Results = fmt.Errorf("%v", err)
+				ch <- res
+				break RESTART
 			}
 
-		case "trades":
-			res.Type = TRADES
-			if err := json.Unmarshal(data, &res.Trades); err != nil {
-				l.Printf("[WARN]: cant unmarshal trades %+v", err)
-				continue
+			typeMsg, err := jsonparser.GetString(msg, "type")
+			if typeMsg == "error" {
+				l.Printf("[ERROR]: error: %+v", string(msg))
+				res.Type = ERROR
+				res.Results = fmt.Errorf("%v", string(msg))
+				ch <- res
+				break RESTART
 			}
 
-		case "orderbook":
-			res.Type = ORDERBOOK
-			if err := json.Unmarshal(data, &res.Orderbook); err != nil {
-				l.Printf("[WARN]: cant unmarshal orderbook %+v", err)
-				continue
+			channel, err := jsonparser.GetString(msg, "channel")
+			if err != nil {
+				l.Printf("[ERROR]: channel error: %+v", string(msg))
+				res.Type = ERROR
+				res.Results = fmt.Errorf("%v", string(msg))
+				ch <- res
+				break RESTART
 			}
 
-		default:
-			res.Type = UNDEFINED
-			res.Results = fmt.Errorf("%v", string(msg))
+			market, err := jsonparser.GetString(msg, "market")
+			if err != nil {
+				l.Printf("[ERROR]: market err: %+v", string(msg))
+				res.Type = ERROR
+				res.Results = fmt.Errorf("%v", string(msg))
+				ch <- res
+				break RESTART
+			}
+
+			res.Symbol = market
+
+			data, _, _, err := jsonparser.Get(msg, "data")
+			if err != nil {
+				if isSubscribe, _ := jsonparser.GetString(msg, "type"); isSubscribe == "subscribed" {
+					l.Printf("[SUCCESS]: %s %+v", isSubscribe, string(msg))
+					continue
+				} else {
+					err = fmt.Errorf("[ERROR]: data err: %v %s", err, string(msg))
+					l.Println(err)
+					res.Type = ERROR
+					res.Results = err
+					ch <- res
+					break RESTART
+				}
+			}
+
+			switch channel {
+			case "ticker":
+				res.Type = TICKER
+				if err := json.Unmarshal(data, &res.Ticker); err != nil {
+					l.Printf("[WARN]: cant unmarshal ticker %+v", err)
+					continue
+				}
+
+			case "trades":
+				res.Type = TRADES
+				if err := json.Unmarshal(data, &res.Trades); err != nil {
+					l.Printf("[WARN]: cant unmarshal trades %+v", err)
+					continue
+				}
+
+			case "orderbook":
+				res.Type = ORDERBOOK
+				if err := json.Unmarshal(data, &res.Orderbook); err != nil {
+					l.Printf("[WARN]: cant unmarshal orderbook %+v", err)
+					continue
+				}
+
+			default:
+				res.Type = UNDEFINED
+				res.Results = fmt.Errorf("%v", string(msg))
+			}
+
+			ch <- res
+
 		}
-
-		ch <- res
-
-	}
+	}()
 
 	return nil
 }
@@ -245,83 +253,91 @@ func ConnectForPrivate(ctx context.Context, ch chan Response, key, secret string
 	if err != nil {
 		return err
 	}
-	defer conn.Close()
 
 	// sign up
 	if err := signature(conn, key, secret); err != nil {
-		l.Fatal(err)
+		return err
 	}
 
 	if err := subscribe(conn, channels, nil); err != nil {
-		l.Println(err)
 		return err
 	}
-	defer unsubscribe(conn, channels, nil)
 
 	go ping(conn)
 
-RESTART:
-	for {
-		var res Response
-		_, msg, err := conn.ReadMessage()
-		if err != nil {
-			l.Printf("[ERROR]: msg error: %+v", err)
-			res.Type = ERROR
-			res.Results = fmt.Errorf("%v", err)
-			ch <- res
-			break RESTART
-		}
+	go func() {
+		defer conn.Close()
+		defer unsubscribe(conn, channels, nil)
 
-		typeMsg, err := jsonparser.GetString(msg, "type")
-		if typeMsg == "error" {
-			l.Printf("[ERROR]: error: %+v", string(msg))
-			res.Type = ERROR
-			res.Results = fmt.Errorf("%v", string(msg))
-			ch <- res
-			break RESTART
-		}
-
-		channel, err := jsonparser.GetString(msg, "channel")
-		if err != nil {
-			l.Printf("[ERROR]: channel error: %+v", string(msg))
-			res.Type = ERROR
-			res.Results = fmt.Errorf("%v", string(msg))
-			ch <- res
-			break RESTART
-		}
-
-		data, _, _, err := jsonparser.Get(msg, "data")
-		if err != nil {
-			if isSubscribe, _ := jsonparser.GetString(msg, "type"); isSubscribe == "subscribed" {
-				l.Printf("[SUCCESS]: %s %+v", isSubscribe, string(msg))
-				continue
-			}
-			return fmt.Errorf("[ERROR]: data err: %v %s", err, string(msg))
-		}
-
-		// Private channel has not market name.
-		switch channel {
-		case "orders":
-			res.Type = ORDERS
-			if err := json.Unmarshal(data, &res.Orders); err != nil {
-				l.Printf("[WARN]: cant unmarshal orders %+v", err)
-				continue
+	RESTART:
+		for {
+			var res Response
+			_, msg, err := conn.ReadMessage()
+			if err != nil {
+				l.Printf("[ERROR]: msg error: %+v", err)
+				res.Type = ERROR
+				res.Results = fmt.Errorf("%v", err)
+				ch <- res
+				break RESTART
 			}
 
-		case "fills":
-			res.Type = FILLS
-			if err := json.Unmarshal(data, &res.Orders); err != nil {
-				l.Printf("[WARN]: cant unmarshal fills %+v", err)
-				continue
+			typeMsg, err := jsonparser.GetString(msg, "type")
+			if typeMsg == "error" {
+				l.Printf("[ERROR]: error: %+v", string(msg))
+				res.Type = ERROR
+				res.Results = fmt.Errorf("%v", string(msg))
+				ch <- res
+				break RESTART
 			}
 
-		default:
-			res.Type = UNDEFINED
-			res.Results = fmt.Errorf("%v", string(msg))
-		}
+			channel, err := jsonparser.GetString(msg, "channel")
+			if err != nil {
+				l.Printf("[ERROR]: channel error: %+v", string(msg))
+				res.Type = ERROR
+				res.Results = fmt.Errorf("%v", string(msg))
+				ch <- res
+				break RESTART
+			}
 
-		ch <- res
-	}
+			data, _, _, err := jsonparser.Get(msg, "data")
+			if err != nil {
+				if isSubscribe, _ := jsonparser.GetString(msg, "type"); isSubscribe == "subscribed" {
+					l.Printf("[SUCCESS]: %s %+v", isSubscribe, string(msg))
+					continue
+				} else {
+					err = fmt.Errorf("[ERROR]: data err: %v %s", err, string(msg))
+					l.Println(err)
+					res.Type = ERROR
+					res.Results = err
+					ch <- res
+					break RESTART
+				}
+			}
+
+			// Private channel has not market name.
+			switch channel {
+			case "orders":
+				res.Type = ORDERS
+				if err := json.Unmarshal(data, &res.Orders); err != nil {
+					l.Printf("[WARN]: cant unmarshal orders %+v", err)
+					continue
+				}
+
+			case "fills":
+				res.Type = FILLS
+				if err := json.Unmarshal(data, &res.Orders); err != nil {
+					l.Printf("[WARN]: cant unmarshal fills %+v", err)
+					continue
+				}
+
+			default:
+				res.Type = UNDEFINED
+				res.Results = fmt.Errorf("%v", string(msg))
+			}
+
+			ch <- res
+		}
+	}()
 
 	return nil
 }
