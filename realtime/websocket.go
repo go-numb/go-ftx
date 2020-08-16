@@ -21,6 +21,7 @@ import (
 
 const (
 	UNDEFINED = iota
+	ERROR
 	TICKER
 	TRADES
 	ORDERBOOK
@@ -153,24 +154,43 @@ func Connect(ctx context.Context, ch chan Response, channels, symbols []string, 
 
 RESTART:
 	for {
+		var res Response
 		_, msg, err := conn.ReadMessage()
 		if err != nil {
-			l.Printf("[ERROR]: msg error: %+v\n", err)
+			l.Printf("[ERROR]: msg error: %+v", err)
+			res.Type = ERROR
+			res.Results = fmt.Errorf("%v", err)
+			ch <- res
 			break RESTART
 		}
 
-		var res Response
+		typeMsg, err := jsonparser.GetString(msg, "type")
+		if typeMsg == "error" {
+			l.Printf("[ERROR]: error: %+v", string(msg))
+			res.Type = ERROR
+			res.Results = fmt.Errorf("%v", string(msg))
+			ch <- res
+			break RESTART
+		}
+
 		channel, err := jsonparser.GetString(msg, "channel")
 		if err != nil {
-			l.Printf("[ERROR]: market err: %+v", string(msg))
-			continue
+			l.Printf("[ERROR]: channel error: %+v", string(msg))
+			res.Type = ERROR
+			res.Results = fmt.Errorf("%v", string(msg))
+			ch <- res
+			break RESTART
 		}
 
 		market, err := jsonparser.GetString(msg, "market")
 		if err != nil {
 			l.Printf("[ERROR]: market err: %+v", string(msg))
-			continue
+			res.Type = ERROR
+			res.Results = fmt.Errorf("%v", string(msg))
+			ch <- res
+			break RESTART
 		}
+
 		res.Symbol = market
 
 		data, _, _, err := jsonparser.Get(msg, "data")
@@ -228,7 +248,7 @@ func ConnectForPrivate(ctx context.Context, ch chan Response, key, secret string
 	defer conn.Close()
 
 	// sign up
-	if err := signeture(conn, key, secret); err != nil {
+	if err := signature(conn, key, secret); err != nil {
 		l.Fatal(err)
 	}
 
@@ -242,17 +262,32 @@ func ConnectForPrivate(ctx context.Context, ch chan Response, key, secret string
 
 RESTART:
 	for {
+		var res Response
 		_, msg, err := conn.ReadMessage()
 		if err != nil {
-			l.Printf("[ERROR]: msg error: %+v", string(msg))
+			l.Printf("[ERROR]: msg error: %+v", err)
+			res.Type = ERROR
+			res.Results = fmt.Errorf("%v", err)
+			ch <- res
 			break RESTART
 		}
 
-		var res Response
+		typeMsg, err := jsonparser.GetString(msg, "type")
+		if typeMsg == "error" {
+			l.Printf("[ERROR]: error: %+v", string(msg))
+			res.Type = ERROR
+			res.Results = fmt.Errorf("%v", string(msg))
+			ch <- res
+			break RESTART
+		}
+
 		channel, err := jsonparser.GetString(msg, "channel")
 		if err != nil {
-			l.Printf("[ERROR]: market err: %s", string(msg))
-			continue
+			l.Printf("[ERROR]: channel error: %+v", string(msg))
+			res.Type = ERROR
+			res.Results = fmt.Errorf("%v", string(msg))
+			ch <- res
+			break RESTART
 		}
 
 		data, _, _, err := jsonparser.Get(msg, "data")
@@ -291,7 +326,7 @@ RESTART:
 	return nil
 }
 
-func signeture(conn *websocket.Conn, key, secret string) error {
+func signature(conn *websocket.Conn, key, secret string) error {
 	// key: your API key
 	// time: integer current timestamp (in milliseconds)
 	// sign: SHA256 HMAC of the following string, using your API secret: <time>websocket_login
@@ -306,7 +341,8 @@ func signeture(conn *websocket.Conn, key, secret string) error {
 
 	msec := time.Now().UTC().UnixNano() / int64(time.Millisecond)
 
-	mac := hmac.New(sha256.New, []byte(fmt.Sprintf("%d%s", msec, secret)))
+	mac := hmac.New(sha256.New, []byte(secret))
+	mac.Write([]byte(fmt.Sprintf("%dwebsocket_login", msec)))
 
 	if err := conn.WriteJSON(&requestForPrivate{
 		Op: "login",
