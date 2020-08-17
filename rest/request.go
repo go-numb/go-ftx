@@ -41,8 +41,6 @@ func (p *Client) newRequest(r Requester) *fasthttp.Request {
 	u.Path = u.Path + r.Path()
 	u.RawQuery = r.Query()
 
-	// fmt.Printf("%+v\n", u.String())
-
 	req := fasthttp.AcquireRequest()
 	req.Header.SetMethod(r.Method())
 	req.SetRequestURI(u.String())
@@ -51,8 +49,12 @@ func (p *Client) newRequest(r Requester) *fasthttp.Request {
 
 	if p.Auth != nil {
 		nonce := fmt.Sprintf("%d", int64(time.Now().UTC().UnixNano()/int64(time.Millisecond)))
-		payload := nonce + r.Method() + u.Path + u.RawQuery + string(body)
-		// fmt.Printf("%+v\n", payload)
+		payload := nonce + r.Method() + u.Path
+		if u.RawQuery != "" {
+			payload += "?" + u.RawQuery
+		}
+		payload += string(body)
+
 		req.Header.Set("Content-Type", "application/json")
 		req.Header.Set("FTX-KEY", p.Auth.Key)
 		req.Header.Set("FTX-SIGN", p.Auth.Signture(payload))
