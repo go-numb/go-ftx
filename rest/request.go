@@ -86,11 +86,17 @@ func (c *Client) do(r Requester) (*fasthttp.Response, error) {
 	if res.StatusCode() != 200 {
 		var r = new(Response)
 		if err := json.Unmarshal(res.Body(), r); err != nil {
-			return nil, fmt.Errorf("faild to get data. status: %d", res.StatusCode())
+			return nil, &APIError{
+				Status:  res.StatusCode(),
+				Message: err.Error(),
+			}
 		}
 
 		if !r.Success {
-			return nil, fmt.Errorf("faild to get data. status: %d - %s", res.StatusCode(), r.Error)
+			return nil, &APIError{
+				Status:  res.StatusCode(),
+				Message: r.Error,
+			}
 		}
 	}
 	return res, nil
