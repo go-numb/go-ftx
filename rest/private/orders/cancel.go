@@ -7,7 +7,7 @@ import (
 
 type RequestForCancelByID struct {
 	ClientID       string
-	OrderID        string
+	OrderID        int
 	TriggerOrderID string
 }
 
