@@ -35,10 +35,10 @@ type OpenTriggerOrder struct {
 	TriggeredAt time.Time `json:"triggeredAt"`
 	CreatedAt   time.Time `json:"createdAt"`
 
-	ReduceOnly       bool `json:"reduceOnly"`
-	RetryUntilFilled bool `json:"retryUntilFilled"`
-	FilledSize       int  `json:"filledSize"`
-	ID               int  `json:"id"`
+	ReduceOnly       bool    `json:"reduceOnly"`
+	RetryUntilFilled bool    `json:"retryUntilFilled"`
+	FilledSize       float64 `json:"filledSize"`
+	ID               int     `json:"id"`
 }
 
 func (req *RequestForOpenTriggerOrders) Path() string {
