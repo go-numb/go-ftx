@@ -19,7 +19,7 @@ func (req *RequestForCancelByID) Path() string {
 	} else if req.ClientID != "" {
 		return fmt.Sprintf("/orders/by_client_id/%s", req.ClientID)
 	}
-	return fmt.Sprintf("/orders/%s", req.OrderID)
+	return fmt.Sprintf("/orders/%d", req.OrderID)
 }
 
 func (req *RequestForCancelByID) Method() string {
