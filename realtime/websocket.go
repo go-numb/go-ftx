@@ -244,7 +244,7 @@ func Connect(ctx context.Context, ch chan Response, channels, symbols []string, 
 	return nil
 }
 
-func ConnectForPrivate(ctx context.Context, ch chan Response, key, secret string, channels []string, l *log.Logger) error {
+func ConnectForPrivate(ctx context.Context, ch chan Response, key, secret string, channels []string, l *log.Logger, subaccount ...string) error {
 	if l == nil {
 		l = log.New(os.Stdout, "ftx websocket", log.Llongfile)
 	}
@@ -255,7 +255,7 @@ func ConnectForPrivate(ctx context.Context, ch chan Response, key, secret string
 	}
 
 	// sign up
-	if err := signature(conn, key, secret); err != nil {
+	if err := signature(conn, key, secret, subaccount); err != nil {
 		return err
 	}
 
@@ -342,7 +342,7 @@ func ConnectForPrivate(ctx context.Context, ch chan Response, key, secret string
 	return nil
 }
 
-func signature(conn *websocket.Conn, key, secret string) error {
+func signature(conn *websocket.Conn, key, secret string, subaccount []string) error {
 	// key: your API key
 	// time: integer current timestamp (in milliseconds)
 	// sign: SHA256 HMAC of the following string, using your API secret: <time>websocket_login
@@ -359,14 +359,18 @@ func signature(conn *websocket.Conn, key, secret string) error {
 
 	mac := hmac.New(sha256.New, []byte(secret))
 	mac.Write([]byte(fmt.Sprintf("%dwebsocket_login", msec)))
+	args := map[string]interface{}{
+		"key":  key,
+		"sign": hex.EncodeToString(mac.Sum(nil)),
+		"time": msec,
+	}
+	if len(subaccount) > 0 {
+		args["subaccount"] = subaccount[0]
+	}
 
 	if err := conn.WriteJSON(&requestForPrivate{
-		Op: "login",
-		Args: map[string]interface{}{
-			"key":  key,
-			"sign": hex.EncodeToString(mac.Sum(nil)),
-			"time": msec,
-		},
+		Op:   "login",
+		Args: args,
 	}); err != nil {
 		return err
 	}
