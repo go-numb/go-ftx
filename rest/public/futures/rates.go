@@ -15,6 +15,14 @@ type RequestForRates struct {
 
 type ResponseForRates []Rate
 
+
+type ByDate []Rate
+
+func (a ByDate) Len() int           { return len(a) }
+func (a ByDate) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByDate) Less(i, j int) bool { return a[i].Time.Before(a[j].Time) }
+
+
 type Rate struct {
 	Future string    `json:"future"`
 	Rate   float64   `json:"rate"`
@@ -43,3 +51,5 @@ func (req *RequestForRates) Payload() []byte {
 func (a ResponseForRates) Len() int           { return len(a) }
 func (a ResponseForRates) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a ResponseForRates) Less(i, j int) bool { return a[i].Rate < a[j].Rate }
+
+

@@ -41,9 +41,7 @@ type Market struct {
 
 func (req *RequestForMarkets) Path() string {
 	if req.ProductCode != "" {
-		// This syntax works to request historical prices
-		// https://ftx.com/api/markets/DEFI-PERP/trades?&start_time=1597687200&end_time=1597773600
-		 fmt.Println("/markets/%s", req.ProductCode)
+		 // fmt.Println("/markets/%s", req.ProductCode)
 		return fmt.Sprintf("/markets/%s", req.ProductCode)
 	}
 	return "/markets"
