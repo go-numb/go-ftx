@@ -38,6 +38,8 @@ type Ticker struct {
 	Time    types.FtxTime `json:"time"`
 }
 
+// This syntax works to request historical prices
+// https://ftx.com/api/markets/DEFI-PERP/trades?&start_time=1597687200&end_time=1597773600
 func (req *RequestForTrades) Path() string {
 	return fmt.Sprintf("/markets/%s/trades", req.ProductCode)
 }
