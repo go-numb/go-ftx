@@ -188,9 +188,6 @@ func main() {
 			case realtime.ORDERBOOK:
 				fmt.Printf("%s	%+v\n", v.Symbol, v.Orderbook)
 
-			case realtime.UNDEFINED:
-				fmt.Printf("%s	%s\n", v.Symbol, v.Results.Error())
-
 			case realtime.ORDERS:
 				fmt.Printf("%d	%+v\n", v.Type, v.Orders)
 
