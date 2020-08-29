@@ -169,7 +169,7 @@ func TestGetFundingRate(t *testing.T) {
 	*/
 }
 
-func TestRates(t *testing.T) {
+func TestMultiUnderlyingsRates(t *testing.T) {
 	c := rest.New(nil)
 	res, err := c.Rates(&futures.RequestForRates{})
 	assert.NoError(t, err)
@@ -195,5 +195,40 @@ func TestRates(t *testing.T) {
 		-0.000322			DOGE-PERP		2020-04-05 04:00:00 +0000 +0000
 		-0.000379			BTMX-PERP		2020-04-05 00:00:00 +0000 +0000
 		-0.000398			XAUT-PERP		2020-04-05 00:00:00 +0000 +0000
+	*/
+}
+
+
+func TestSingleUnderlyingRates(t *testing.T) {
+	c := rest.New(nil)
+	res, err := c.Rates(&futures.RequestForRates{
+		ProductCode: "BTC-PERP",
+		Start:       time.Now().Add(-900 * time.Second).Unix(), // optional
+		End:         time.Now().Unix(),                         // optional
+
+	})
+	assert.NoError(t, err)
+
+	sort.Sort(sort.Reverse(res))
+	for _, v := range *res {
+		fmt.Printf("%s			%s		%s\n", humanize.Commaf(v.Rate), v.Future, v.Time.String())
+	}
+
+	/*
+		>>
+		0.000404			BTC-PERP		2020-04-05 10:00:00 +0000 +0000
+		0.000367			BTC-PERP		2020-04-05 11:00:00 +0000 +0000
+		0.000357			BTC-PERP		2020-04-05 07:00:00 +0000 +0000
+		0.000338			BTC-PERP		2020-04-05 09:00:00 +0000 +0000
+		0.00029				BTC-PERP		2020-04-05 08:00:00 +0000 +0000
+
+		(omitting...)
+
+		-0.000277			BTC-PERP		2020-04-04 23:00:00 +0000 +0000
+		-0.000293			BTC-PERP		2020-04-05 03:00:00 +0000 +0000
+		-0.000304			BTC-PERP		2020-04-04 23:00:00 +0000 +0000
+		-0.000322			BTC-PERP		2020-04-05 04:00:00 +0000 +0000
+		-0.000379			BTC-PERP		2020-04-05 00:00:00 +0000 +0000
+		-0.000398			BTC-PERP		2020-04-05 00:00:00 +0000 +0000
 	*/
 }

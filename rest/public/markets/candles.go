@@ -46,3 +46,8 @@ func (req *RequestForCandles) Query() string {
 func (req *RequestForCandles) Payload() []byte {
 	return nil
 }
+
+// Sort by timestamp
+func (a ResponseForCandles) Len() int           { return len(a) }
+func (a ResponseForCandles) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ResponseForCandles) Less(i, j int) bool { return a[i].StartTime.Before( a[j].StartTime)}

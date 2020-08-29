@@ -41,8 +41,6 @@ func (p *Client) newRequest(r Requester) *fasthttp.Request {
 	u.Path = u.Path + r.Path()
 	u.RawQuery = r.Query()
 
-	// fmt.Printf("%+v\n", u.String())
-
 	req := fasthttp.AcquireRequest()
 	req.Header.SetMethod(r.Method())
 	req.SetRequestURI(u.String())
@@ -51,8 +49,12 @@ func (p *Client) newRequest(r Requester) *fasthttp.Request {
 
 	if p.Auth != nil {
 		nonce := fmt.Sprintf("%d", int64(time.Now().UTC().UnixNano()/int64(time.Millisecond)))
-		payload := nonce + r.Method() + u.Path + u.RawQuery + string(body)
-		// fmt.Printf("%+v\n", payload)
+		payload := nonce + r.Method() + u.Path
+		if u.RawQuery != "" {
+			payload += "?" + u.RawQuery
+		}
+		payload += string(body)
+
 		req.Header.Set("Content-Type", "application/json")
 		req.Header.Set("FTX-KEY", p.Auth.Key)
 		req.Header.Set("FTX-SIGN", p.Auth.Signture(payload))
@@ -84,11 +86,17 @@ func (c *Client) do(r Requester) (*fasthttp.Response, error) {
 	if res.StatusCode() != 200 {
 		var r = new(Response)
 		if err := json.Unmarshal(res.Body(), r); err != nil {
-			return nil, fmt.Errorf("faild to get data. status: %d", res.StatusCode())
+			return nil, &APIError{
+				Status:  res.StatusCode(),
+				Message: err.Error(),
+			}
 		}
 
 		if !r.Success {
-			return nil, fmt.Errorf("faild to get data. status: %d - %s", res.StatusCode(), r.Error)
+			return nil, &APIError{
+				Status:  res.StatusCode(),
+				Message: r.Error,
+			}
 		}
 	}
 	return res, nil

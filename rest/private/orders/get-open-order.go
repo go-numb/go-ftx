@@ -50,6 +50,7 @@ type Order struct {
 	FilledSize    float64 `json:"filledSize"`
 	RemainingSize float64 `json:"remainingSize"`
 	AvgFillPrice  float64 `json:"avgFillPrice"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 func (req *RequestForOpenOrder) Path() string {
