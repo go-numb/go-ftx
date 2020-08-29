@@ -73,7 +73,13 @@ func TestFutures(t *testing.T) {
 	res, err := c.Futures(&futures.RequestForFutures{})
 	assert.NoError(t, err)
 
-	fmt.Printf("%+v\n", res)
+	for i, v := range res.Products() {
+		fmt.Printf("%d: %+v\n", i, v)
+	}
+
+	for _, v := range *res {
+		fmt.Printf("%+v	%.2f\n", v.Name, v.Ask)
+	}
 }
 
 func TestFuture(t *testing.T) {
@@ -123,7 +129,7 @@ func TestGetFundingRate(t *testing.T) {
 		if v.NextFundingRate == 0 {
 			continue
 		}
-		fmt.Printf("%s			%s\n", humanize.Commaf(v.NextFundingRate), v.Name)
+		fmt.Printf("%s			%s\n", humanize.Commaf(v.NextFundingRate*100), v.Name)
 	}
 
 	/*
