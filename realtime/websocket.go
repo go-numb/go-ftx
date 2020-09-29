@@ -133,7 +133,7 @@ EXIT:
 	return err
 }
 
-
+/*
 type MyError struct {
 	When time.Time
 	What string
@@ -144,12 +144,13 @@ func (e *MyError) Error() string {
 	e.When, e.What)
 }
 
-func run() error {
+func createFakeError() error {
 	return &MyError{
 		time.Now(),
 		"it didn't work",
 	}
 }
+*/
 
 // Maybe should return the connection so we can auto reconnect later on
 // Or alternatively extract the conn out of this function
@@ -292,7 +293,7 @@ func Connect(ctx context.Context, ch chan Response, channels []string, symbols [
 
 	if  delay > 10.0 {
 		fmt.Println("Creating artificial error ! : delay = ", delay)
-		artificialError = run() 
+		artificialError = createFakeError() 
 		outputErr = artificialError
 	}
 */
