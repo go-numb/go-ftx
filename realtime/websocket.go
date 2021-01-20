@@ -64,7 +64,7 @@ type Orderbook struct {
 	Checksum int           `json:"checksum"`
 }
 
-func subscribe(conn *websocket.Conn, channels, symbols []string) error {
+func subscribe(conn *websocket.Conn, channels []string, symbols []string) error {
 	if symbols != nil {
 		for i := range channels {
 			for j := range symbols {
@@ -90,7 +90,7 @@ func subscribe(conn *websocket.Conn, channels, symbols []string) error {
 	return nil
 }
 
-func unsubscribe(conn *websocket.Conn, channels, symbols []string) error {
+func unsubscribe(conn *websocket.Conn, channels []string, symbols []string) error {
 	if symbols != nil {
 		for i := range channels {
 			for j := range symbols {
@@ -116,6 +116,7 @@ func unsubscribe(conn *websocket.Conn, channels, symbols []string) error {
 	return nil
 }
 
+
 func ping(conn *websocket.Conn) (err error) {
 	ticker := time.NewTicker(15 * time.Second)
 	defer ticker.Stop()
@@ -132,18 +133,56 @@ EXIT:
 	return err
 }
 
-func Connect(ctx context.Context, ch chan Response, channels, symbols []string, l *log.Logger) error {
+/*
+type MyError struct {
+	When time.Time
+	What string
+}
+
+func (e *MyError) Error() string {
+	return fmt.Sprintf("artificial errror at %v, %s",
+	e.When, e.What)
+}
+
+func createFakeError() error {
+	return &MyError{
+		time.Now(),
+		"it didn't work",
+	}
+}
+*/
+
+func ConnectWithRetries(...., numRetries)
+
+// Maybe should return the connection so we can auto reconnect later on
+// Or alternatively extract the conn out of this function
+// and pass it as a parameter to Connect.
+func Connect(ctx context.Context, ch chan Response, channels []string, symbols []string, l *log.Logger ) error {
+	var outputErr error
+	outputErr = nil
+
+/*
+	snapshottedTime := time.Now()
+	var delay float64
+	var artificialError error
+	artificialError = run() 
+	outputErr = artificialError
+*/
 	if l == nil {
 		l = log.New(os.Stdout, "ftx websocket", log.Llongfile)
 	}
 
+	// outer loop 1..numRErreies
+
 	conn, _, err := websocket.DefaultDialer.Dial("wss://ftx.com/ws/", nil)
 	if err != nil {
-		return err
+		outputErr = err
+		return outputErr 
 	}
 
 	if err := subscribe(conn, channels, symbols); err != nil {
-		return err
+		outputErr = err
+		return outputErr 
 	}
 
 	// ping each 15sec for exchange
@@ -237,13 +276,71 @@ func Connect(ctx context.Context, ch chan Response, channels, symbols []string, 
 			}
 
 			ch <- res
-
+			// Create artificial error after a certain time
+/*
+			currentTime := time.Now()
+			delay:= currentTime.Sub(snapshottedTime ).Seconds()
+			fmt.Println(" delay = ", delay)
+			if  delay > 10.0 {
+				break RESTART
+			}
+*/
 		}
 	}()
 
-	return nil
+/*
+
+	if  delay > 10.0 {
+		fmt.Println("Creating artificial error ! : delay = ", delay)
+		artificialError = createFakeError() 
+		outputErr = artificialError
+	}
+*/
+	// There was a fatal error on the websocket, let's close the connection gracefully before reconnecting later @Tuan
+	if outputErr != nil {
+		fmt.Println("Closing connection...")
+		conn.Close()
+		fmt.Println("Unsubscribing connection...")
+		unsubscribe(conn, channels, symbols)
+		// Check for unsubscribed message before gracefully exiting : we need an infinite loop that listens to "unsubscribed" incoming
+		// messages. Once all have arived, then exit this function with the right error message.
+
+		// Check for unsubscribed according to this protocol : 
+		// Excerpts from FTX API documentation : 
+		// 	Websocket connections go through the following lifecycle: - Establish a websocket connection with wss://ftx.com/ws/ - (Optional) 
+		// 1. Authenticate with {'op': 'login', 'args': {'key': <api_key>, 'sign': <signature>, 'time': <ts>}} - 
+		// 2. Send pings at regular intervals (every 15 seconds): {'op': 'ping'}. You will see an {'type': 'pong'} response. - 
+		// 3. Subscribe to a channel with {'op': 'subscribe', 'channel': 'trades', 'market': 'BTC-PERP'} - 
+		// 4. Receive subscription response {'type': 'subscribed', 'channel': 'trades', 'market': 'BTC-PERP'} - 
+		// 5. Receive data {'type': 'update', 'channel': 'trades', 'market': 'BTC-PERP', 'data': {'bid': 5230.5, 'ask': 5231.0, 'ts': 1557133490.4047449, 'last': 5230.5}} - 
+		// 6. Unsubscribe {'op': 'unsubscribe', 'channel': 'trades', 'market': 'BTC-PERP'} - 
+		// 7. Receive unsubscription response {'type': 'unsubscribed', 'channel': 'trades', 'market': 'BTC-PERP'}
+		fmt.Println("Closed connection...")
+		fmt.Println("Unsubscribed connection...")
+	}
+	return outputErr // <-- Now outputErr is not systematically nil, therefore it is possible to handle the error and create an auto-reconnect if there is an issue
+	// return nil // Original return
 }
 
+// CheckUnsubscribed check wether the feedhandler is unsubscribed before a reconnect
+/*
+func CheckUnsubscribed ( ) {
+
+			data, _, _, err := jsonparser.Get(msg, "data")
+			if err != nil {
+				if isUnsubscribed, _ := jsonparser.GetString(msg, "type"); isUnsubscribed == "unsubscribed" {
+					l.Printf("[SUCCESS]: %s %+v", isUnsubscribe, string(msg))
+					continue
+				} else {
+					err = fmt.Errorf("[ERROR]: data err: %v %s", err, string(msg))
+					l.Println(err)
+					res.Type = ERROR
+					res.Results = err
+					ch <- res
+					// break RESTART
+				}
+}
+*/
 func ConnectForPrivate(ctx context.Context, ch chan Response, key, secret string, channels []string, l *log.Logger, subaccount ...string) error {
 	if l == nil {
 		l = log.New(os.Stdout, "ftx websocket", log.Llongfile)
@@ -325,7 +422,7 @@ func ConnectForPrivate(ctx context.Context, ch chan Response, key, secret string
 
 			case "fills":
 				res.Type = FILLS
-				if err := json.Unmarshal(data, &res.Orders); err != nil {
+				if err := json.Unmarshal(data, &res.Fills); err != nil {
 					l.Printf("[WARN]: cant unmarshal fills %+v", err)
 					continue
 				}
