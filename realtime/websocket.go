@@ -152,6 +152,8 @@ func createFakeError() error {
 }
 */
 
+func ConnectWithRetries(...., numRetries)
+
 // Maybe should return the connection so we can auto reconnect later on
 // Or alternatively extract the conn out of this function
 // and pass it as a parameter to Connect.
@@ -169,6 +171,8 @@ func Connect(ctx context.Context, ch chan Response, channels []string, symbols [
 	if l == nil {
 		l = log.New(os.Stdout, "ftx websocket", log.Llongfile)
 	}
+
+	// outer loop 1..numRErreies
 
 	conn, _, err := websocket.DefaultDialer.Dial("wss://ftx.com/ws/", nil)
 	if err != nil {
@@ -197,7 +201,6 @@ func Connect(ctx context.Context, ch chan Response, channels []string, symbols [
 				res.Type = ERROR
 				res.Results = fmt.Errorf("%v", err)
 				ch <- res
-				outputErr = err
 				break RESTART
 			}
 
@@ -207,7 +210,6 @@ func Connect(ctx context.Context, ch chan Response, channels []string, symbols [
 				res.Type = ERROR
 				res.Results = fmt.Errorf("%v", string(msg))
 				ch <- res
-				outputErr = err
 				break RESTART
 			}
 
@@ -217,7 +219,6 @@ func Connect(ctx context.Context, ch chan Response, channels []string, symbols [
 				res.Type = ERROR
 				res.Results = fmt.Errorf("%v", string(msg))
 				ch <- res
-				outputErr = err
 				break RESTART
 			}
 
@@ -227,7 +228,6 @@ func Connect(ctx context.Context, ch chan Response, channels []string, symbols [
 				res.Type = ERROR
 				res.Results = fmt.Errorf("%v", string(msg))
 				ch <- res
-				outputErr = err
 				break RESTART
 			}
 
@@ -244,7 +244,6 @@ func Connect(ctx context.Context, ch chan Response, channels []string, symbols [
 					res.Type = ERROR
 					res.Results = err
 					ch <- res
-					outputErr = err
 					break RESTART
 				}
 			}
