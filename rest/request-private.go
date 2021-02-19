@@ -5,6 +5,7 @@ import (
 	"github.com/go-numb/go-ftx/rest/private/fills"
 	"github.com/go-numb/go-ftx/rest/private/funding"
 	"github.com/go-numb/go-ftx/rest/private/orders"
+	"github.com/go-numb/go-ftx/rest/private/spotmargin"
 	"github.com/go-numb/go-ftx/rest/private/subaccount"
 	"github.com/go-numb/go-ftx/rest/private/wallet"
 )
@@ -202,6 +203,34 @@ func (p *Client) Fills(req *fills.Request) (*fills.Response, error) {
 
 func (p *Client) Funding(req *funding.Request) (*funding.Response, error) {
 	results := new(funding.Response)
+	if err := p.request(req, results); err != nil {
+		return nil, err
+	}
+	return results, nil
+}
+
+/*
+	# Spot Margin
+*/
+
+func (p *Client) GetLendingInfo(req *spotmargin.RequestForLendingInfo) (*spotmargin.ResponseForLendingInfo, error) {
+	results := new(spotmargin.ResponseForLendingInfo)
+	if err := p.request(req, results); err != nil {
+		return nil, err
+	}
+	return results, nil
+}
+
+func (p *Client) GetLendingRates(req *spotmargin.RequestForLendingRates) (*spotmargin.ResponseForLendingRates, error) {
+	results := new(spotmargin.ResponseForLendingRates)
+	if err := p.request(req, results); err != nil {
+		return nil, err
+	}
+	return results, nil
+}
+
+func (p *Client) SubmitLendingOffer(req *spotmargin.RequestForLendingOffer) (*spotmargin.ResponseForLendingOffer, error) {
+	results := new(spotmargin.ResponseForLendingOffer)
 	if err := p.request(req, results); err != nil {
 		return nil, err
 	}
