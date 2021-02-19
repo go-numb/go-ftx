@@ -229,6 +229,14 @@ func (p *Client) GetLendingRates(req *spotmargin.RequestForLendingRates) (*spotm
 	return results, nil
 }
 
+func (p *Client) GetLendingHistory(req *spotmargin.RequestForLendingHistory) (*spotmargin.ResponseForLendingHistory, error) {
+	results := new(spotmargin.ResponseForLendingHistory)
+	if err := p.request(req, results); err != nil {
+		return nil, err
+	}
+	return results, nil
+}
+
 func (p *Client) SubmitLendingOffer(req *spotmargin.RequestForLendingOffer) (*spotmargin.ResponseForLendingOffer, error) {
 	results := new(spotmargin.ResponseForLendingOffer)
 	if err := p.request(req, results); err != nil {
