@@ -14,6 +14,7 @@ import (
 	"github.com/go-numb/go-ftx/rest/private/account"
 	"github.com/go-numb/go-ftx/rest/private/fills"
 	"github.com/go-numb/go-ftx/rest/private/orders"
+	"github.com/go-numb/go-ftx/rest/private/spotmargin"
 	"github.com/go-numb/go-ftx/rest/private/subaccount"
 	"github.com/go-numb/go-ftx/rest/private/wallet"
 	"github.com/go-numb/go-ftx/types"
@@ -280,6 +281,49 @@ func TestFills(t *testing.T) {
 
 	res, err := c.Fills(&fills.Request{
 		ProductCode: "",
+	})
+	assert.NoError(t, err)
+
+	fmt.Printf("%+v\n", res)
+}
+
+/*
+	# Spot Margin
+*/
+func TestGetLendingInfo(t *testing.T) {
+	c := rest.New(auth.New(os.Getenv("FTXKEY"), os.Getenv("FTXSECRET")))
+
+	res, err := c.GetLendingInfo(&spotmargin.RequestForLendingInfo{})
+	assert.NoError(t, err)
+
+	fmt.Printf("%+v\n", res)
+}
+
+func TestGetLendingRates(t *testing.T) {
+	c := rest.New(auth.New(os.Getenv("FTXKEY"), os.Getenv("FTXSECRET")))
+
+	res, err := c.GetLendingRates(&spotmargin.RequestForLendingRates{})
+	assert.NoError(t, err)
+
+	fmt.Printf("%+v\n", res)
+}
+
+func TestGetLendingHistory(t *testing.T) {
+	c := rest.New(auth.New(os.Getenv("FTXKEY"), os.Getenv("FTXSECRET")))
+
+	res, err := c.GetLendingHistory(&spotmargin.RequestForLendingHistory{})
+	assert.NoError(t, err)
+
+	fmt.Printf("%+v\n", res)
+}
+
+func TestSubmitLendingOffer(t *testing.T) {
+	c := rest.New(auth.New(os.Getenv("FTXKEY"), os.Getenv("FTXSECRET")))
+
+	res, err := c.SubmitLendingOffer(&spotmargin.RequestForLendingOffer{
+		Coin: "USD",
+		Size: 10000,
+		Rate: 0.2 / 24 / 365, // APY 20%
 	})
 	assert.NoError(t, err)
 
