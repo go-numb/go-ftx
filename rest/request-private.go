@@ -213,14 +213,6 @@ func (p *Client) Funding(req *funding.Request) (*funding.Response, error) {
 	# Spot Margin
 */
 
-func (p *Client) GetBorrowHistory(req *spotmargin.RequestForBorrowHistory) (*spotmargin.ResponseForBorrowHistory, error) {
-	results := new(spotmargin.ResponseForBorrowHistory)
-	if err := p.request(req, results); err != nil {
-		return nil, err
-	}
-	return results, nil
-}
-
 func (p *Client) GetLendingInfo(req *spotmargin.RequestForLendingInfo) (*spotmargin.ResponseForLendingInfo, error) {
 	results := new(spotmargin.ResponseForLendingInfo)
 	if err := p.request(req, results); err != nil {
@@ -247,6 +239,22 @@ func (p *Client) GetLendingHistory(req *spotmargin.RequestForLendingHistory) (*s
 
 func (p *Client) SubmitLendingOffer(req *spotmargin.RequestForLendingOffer) (*spotmargin.ResponseForLendingOffer, error) {
 	results := new(spotmargin.ResponseForLendingOffer)
+	if err := p.request(req, results); err != nil {
+		return nil, err
+	}
+	return results, nil
+}
+
+func (p *Client) GetBorrowRates(req *spotmargin.RequestForBorrowRates) (*spotmargin.ResponseForBorrowRates, error) {
+	results := new(spotmargin.ResponseForBorrowRates)
+	if err := p.request(req, results); err != nil {
+		return nil, err
+	}
+	return results, nil
+}
+
+func (p *Client) GetBorrowHistory(req *spotmargin.RequestForBorrowHistory) (*spotmargin.ResponseForBorrowHistory, error) {
+	results := new(spotmargin.ResponseForBorrowHistory)
 	if err := p.request(req, results); err != nil {
 		return nil, err
 	}
