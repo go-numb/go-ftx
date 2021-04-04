@@ -330,6 +330,24 @@ func TestSubmitLendingOffer(t *testing.T) {
 	fmt.Printf("%+v\n", res)
 }
 
+func TestGetBorrowRates(t *testing.T) {
+	c := rest.New(auth.New(os.Getenv("FTXKEY"), os.Getenv("FTXSECRET")))
+
+	res, err := c.GetBorrowRates(&spotmargin.RequestForBorrowRates{})
+	assert.NoError(t, err)
+
+	fmt.Printf("%+v\n", res)
+}
+
+func TestGetBorrowHistory(t *testing.T) {
+	c := rest.New(auth.New(os.Getenv("FTXKEY"), os.Getenv("FTXSECRET")))
+
+	res, err := c.GetBorrowHistory(&spotmargin.RequestForBorrowHistory{})
+	assert.NoError(t, err)
+
+	fmt.Printf("%+v\n", res)
+}
+
 /*
 	# SubAccount
 */

@@ -245,6 +245,22 @@ func (p *Client) SubmitLendingOffer(req *spotmargin.RequestForLendingOffer) (*sp
 	return results, nil
 }
 
+func (p *Client) GetBorrowRates(req *spotmargin.RequestForBorrowRates) (*spotmargin.ResponseForBorrowRates, error) {
+	results := new(spotmargin.ResponseForBorrowRates)
+	if err := p.request(req, results); err != nil {
+		return nil, err
+	}
+	return results, nil
+}
+
+func (p *Client) GetBorrowHistory(req *spotmargin.RequestForBorrowHistory) (*spotmargin.ResponseForBorrowHistory, error) {
+	results := new(spotmargin.ResponseForBorrowHistory)
+	if err := p.request(req, results); err != nil {
+		return nil, err
+	}
+	return results, nil
+}
+
 /*
 	# SubAccount
 */
