@@ -10,8 +10,8 @@ import (
 type Request struct {
 	ProductCode string `url:"market,omitempty"`
 	Limit       int    `url:"limit,omitempty"`
-	Start       int64  `url:"start,omitempty"`
-	End         int64  `url:"end,omitempty"`
+	Start       int64  `url:"start_time,omitempty"`
+	End         int64  `url:"end_time,omitempty"`
 }
 
 type Response []Fill
