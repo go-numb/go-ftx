@@ -325,7 +325,7 @@ func ConnectForPrivate(ctx context.Context, ch chan Response, key, secret string
 
 			case "fills":
 				res.Type = FILLS
-				if err := json.Unmarshal(data, &res.Orders); err != nil {
+				if err := json.Unmarshal(data, &res.Fills); err != nil {
 					l.Printf("[WARN]: cant unmarshal fills %+v", err)
 					continue
 				}
