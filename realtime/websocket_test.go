@@ -3,24 +3,29 @@ package realtime_test
 import (
 	"context"
 	"fmt"
+	"time"
 	"testing"
 
 	"github.com/go-numb/go-ftx/realtime"
+	// "github.com/tuanito/go-ftx/realtime"
 )
 
 func TestConnect(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	ch := make(chan realtime.Response)
-	go realtime.Connect(ctx, ch, []string{"ticker"}, []string{"BTC-PERP", "ETH-PERP"}, nil)
+	rtQuotesCh := make(chan realtime.Response)
+	// errCh := make (chan error)
+	go realtime.Connect(ctx, rtQuotesCh, []string{"ticker"}, []string{"BTC-PERP", "ETH-PERP"}, nil)
 
+	layout := "2006-01-02 15:04:05"
 	for {
+		currentTime := time.Now()
 		select {
-		case v := <-ch:
+		case v := <-rtQuotesCh:
 			switch v.Type {
 			case realtime.TICKER:
-				fmt.Printf("%s	%+v\n", v.Symbol, v.Ticker)
+				fmt.Printf("%s %s	%+v\n", currentTime.Format(layout), v.Symbol, v.Ticker)
 
 			case realtime.TRADES:
 				fmt.Printf("%s	%+v\n", v.Symbol, v.Trades)
@@ -35,6 +40,10 @@ func TestConnect(t *testing.T) {
 
 			case realtime.UNDEFINED:
 				fmt.Printf("%s	%s\n", v.Symbol, v.Results.Error())
+			}
+			// Error handling for auto-reconnect
+			if v.Results  != nil { 
+			fmt.Println("Connection error :", v.Results)
 			}
 		}
 	}
