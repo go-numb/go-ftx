@@ -10,7 +10,7 @@ type RequestForModifyOrder struct {
 	OrderID  string  `json:"-"`
 	ClientID string  `json:"-"`
 	Price    float64 `json:"price,omitempty"`
-	Size     float64 `json:"side,omitempty"`
+	Size     float64 `json:"size,omitempty"`
 }
 
 type ResponseForModifyOrder struct {
