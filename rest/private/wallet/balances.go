@@ -10,10 +10,12 @@ type RequestForBalances struct {
 type ResponseForBalances []Balance
 
 type Balance struct {
-	Coin  string  `json:"coin"`
-	Free  float64 `json:"free"`
-	Total float64 `json:"total"`
-	USDValue float64 `json:"usdvalue"`
+	Coin                   string  `json:"coin"`
+	Free                   float64 `json:"free"`
+	Total                  float64 `json:"total"`
+	USDValue               float64 `json:"usdvalue"`
+	StopBorrow             float64 `json:"spotBorrow"`
+	AvailableWithoutBorrow float64 `json:"availableWithoutBorrow"`
 }
 
 func (req *RequestForBalances) Path() string {
