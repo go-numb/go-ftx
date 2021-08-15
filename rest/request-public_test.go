@@ -7,10 +7,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/0x1be20/go-ftx/rest"
+	"github.com/0x1be20/go-ftx/rest/public/futures"
+	"github.com/0x1be20/go-ftx/rest/public/markets"
 	"github.com/dustin/go-humanize"
-	"github.com/go-numb/go-ftx/rest"
-	"github.com/go-numb/go-ftx/rest/public/futures"
-	"github.com/go-numb/go-ftx/rest/public/markets"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -197,7 +197,6 @@ func TestMultiUnderlyingsRates(t *testing.T) {
 		-0.000398			XAUT-PERP		2020-04-05 00:00:00 +0000 +0000
 	*/
 }
-
 
 func TestSingleUnderlyingRates(t *testing.T) {
 	c := rest.New(nil)

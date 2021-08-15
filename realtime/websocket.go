@@ -11,11 +11,11 @@ import (
 	"os"
 	"time"
 
+	"github.com/0x1be20/go-ftx/rest/private/fills"
+	"github.com/0x1be20/go-ftx/rest/private/orders"
+	"github.com/0x1be20/go-ftx/rest/public/markets"
+	"github.com/0x1be20/go-ftx/types"
 	"github.com/buger/jsonparser"
-	"github.com/go-numb/go-ftx/rest/private/fills"
-	"github.com/go-numb/go-ftx/rest/private/orders"
-	"github.com/go-numb/go-ftx/rest/public/markets"
-	"github.com/go-numb/go-ftx/types"
 	"github.com/gorilla/websocket"
 )
 
