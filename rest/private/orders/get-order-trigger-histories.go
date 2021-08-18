@@ -37,8 +37,8 @@ type TriggerHistory struct {
 
 	ID               int       `json:"id"`
 	OrderID          int       `json:"orderId"`
-	Size             int       `json:"size"`
-	FilledSize       int       `json:"filledSize"`
+	Size             float64   `json:"size"`
+	FilledSize       float64   `json:"filledSize"`
 	RetryUntilFilled bool      `json:"retryUntilFilled"`
 	ReduceOnly       bool      `json:"reduceOnly"`
 	TriggeredAt      time.Time `json:"triggeredAt"`
