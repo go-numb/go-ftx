@@ -10,8 +10,8 @@ import (
 type Request struct {
 	ProductCode string `url:"market,omitempty"`
 	Limit       int    `url:"limit,omitempty"`
-	Start       int64  `url:"start,omitempty"`
-	End         int64  `url:"end,omitempty"`
+	Start       int64  `url:"start_time,omitempty"`
+	End         int64  `url:"end_time,omitempty"`
 }
 
 type Response []Fill
@@ -25,6 +25,7 @@ type Fill struct {
 	// only rest follow 2factor
 	BaseCurrency  string `json:"baseCurrency"`
 	QuoteCurrency string `json:"quoteCurrency"`
+	FeeCurrency   string `json:"feeCurrency"`
 
 	Side string `json:"side"`
 

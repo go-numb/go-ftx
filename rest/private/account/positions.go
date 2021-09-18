@@ -5,6 +5,7 @@ import (
 )
 
 type RequestForPositions struct {
+	ShowAvgPrice bool `json:"showAvgPrice"`
 }
 
 type ResponseForPositions []Position
@@ -28,6 +29,13 @@ type Position struct {
 	Cost          float64 `json:"cost"`
 	UnrealizedPnl float64 `json:"unrealizedPnl"`
 	RealizedPnl   float64 `json:"realizedPnl"`
+
+	CollateralUsed         float64 `json:"collateralUsed,omitempty"`
+	RecentAverageOpenPrice float64 `json:"recentAverageOpenPrice,omitempty"`
+	RecentPnl              float64 `json:"recentPnl,omitempty"`
+	RecentBreakEvenPrice   float64 `json:"recentBreakEvenPrice,omitempty"`
+	CumulativeBuySize      float64 `json:"cumulativeBuySize,omitempty"`
+	CumulativeSellSize     float64 `json:"cumulativeSellSize,omitempty"`
 }
 
 func (req *RequestForPositions) Path() string {
@@ -39,6 +47,9 @@ func (req *RequestForPositions) Method() string {
 }
 
 func (req *RequestForPositions) Query() string {
+	if req.ShowAvgPrice {
+		return "showAvgPrice=true"
+	}
 	return ""
 }
 

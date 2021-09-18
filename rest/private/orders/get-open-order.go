@@ -27,16 +27,16 @@ type OpenOrder struct {
 	FilledSize    float64 `json:"filledSize"`
 	RemainingSize float64 `json:"remainingSize"`
 
-	ID         int  `json:"id"`
-	ReduceOnly bool `json:"reduceOnly"`
-	Ioc        bool `json:"ioc"`
-	PostOnly   bool `json:"postOnly"`
+	ID         int64 `json:"id"`
+	ReduceOnly bool  `json:"reduceOnly"`
+	Ioc        bool  `json:"ioc"`
+	PostOnly   bool  `json:"postOnly"`
 
 	CreatedAt time.Time `json:"createdAt"`
 }
 
 type Order struct {
-	ID            int     `json:"id"`
+	ID            int64   `json:"id"`
 	ClientID      string  `json:"clientId"`
 	Market        string  `json:"market"`
 	Type          string  `json:"type"`
