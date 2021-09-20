@@ -11,7 +11,7 @@ import (
 type RequestForRates struct {
 	ProductCode string `url:"future,omitempty"`
 	Start       int64  `url:"start_time,omitempty"`
-	End         int64  `url:"end_time omitempty"`
+	End         int64  `url:"end_time,omitempty"`
 }
 
 type ResponseForRates []Rate
