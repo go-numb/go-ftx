@@ -7,6 +7,7 @@ import (
 type RequestForCancelAll struct {
 	ProductCode           string `json:"market,omitempty"`
 	ConditionalOrdersOnly bool   `json:"conditionalOrdersOnly,omitempty"`
+	Side                  string `json:"side,omitempty"`
 	LimitOrdersOnly       bool   `json:"limitOrdersOnly,omitempty"`
 }
 
