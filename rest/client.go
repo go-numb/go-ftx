@@ -3,8 +3,8 @@ package rest
 import (
 	"time"
 
-	"github.com/go-numb/go-ftx/auth"
 	jsoniter "github.com/json-iterator/go"
+	"github.com/sanychtasher/go-ftx/auth"
 	"github.com/valyala/fasthttp"
 )
 

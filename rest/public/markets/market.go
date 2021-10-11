@@ -41,7 +41,7 @@ type Market struct {
 
 func (req *RequestForMarkets) Path() string {
 	if req.ProductCode != "" {
-		 // fmt.Println("/markets/%s", req.ProductCode)
+		// fmt.Println("/markets/%s", req.ProductCode)
 		return fmt.Sprintf("/markets/%s", req.ProductCode)
 	}
 	return "/markets"
