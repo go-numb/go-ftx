@@ -11,13 +11,13 @@ type RequestForModifyTriggerOrder struct {
 	TrailValue   float64 `json:"trailValue,omitempty"`
 	TriggerPrice float64 `json:"triggerPrice,omitempty"`
 	//	OrderPrice only for stop limit orders
-	OrderPrice float64 `json:"triggerPrice,omitempty"`
+	OrderPrice float64 `json:"orderPrice,omitempty"`
 	// necessary
 	Size float64 `json:"size"`
 }
 
 type ResponseForModifyTriggerOrder struct {
-	OrderID   string `json:"orderId"`
+	OrderID   int    `json:"orderId"`
 	Type      string `json:"type"`
 	OrderType string `json:"orderType"`
 	Future    string `json:"future"`

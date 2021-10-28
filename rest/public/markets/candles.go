@@ -14,7 +14,6 @@ type RequestForCandles struct {
 	ProductCode string `url:"-"`
 	// Resolution is sec length, window length in seconds. options: 15, 60(1m), 300(5m), 900(15m), 3600(60m), 14400(4h), 86400(1D)
 	Resolution int   `url:"resolution"`
-	Limit      int   `url:"limit,omitempty"`
 	Start      int64 `url:"start_time,omitempty"`
 	End        int64 `url:"end_time,omitempty"`
 }
@@ -50,4 +49,4 @@ func (req *RequestForCandles) Payload() []byte {
 // Sort by timestamp
 func (a ResponseForCandles) Len() int           { return len(a) }
 func (a ResponseForCandles) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a ResponseForCandles) Less(i, j int) bool { return a[i].StartTime.Before( a[j].StartTime)}
+func (a ResponseForCandles) Less(i, j int) bool { return a[i].StartTime.Before(a[j].StartTime) }

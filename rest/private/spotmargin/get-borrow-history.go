@@ -6,6 +6,11 @@ import (
 	"time"
 )
 
+type RequestForBorrowHistory struct {
+	StartTime time.Time `json:"start_time,omitempty"`
+	EndTime   time.Time `json:"end_time,omitempty"`
+}
+
 type ResponseForBorrowHistory []BorrowHistory
 
 type BorrowHistory struct {
@@ -15,8 +20,6 @@ type BorrowHistory struct {
 	Size float64   `json:"size"`
 	Time time.Time `json:"time"`
 }
-
-type RequestForBorrowHistory struct{}
 
 func (req *RequestForBorrowHistory) Path() string {
 	return "/spot_margin/borrow_history"

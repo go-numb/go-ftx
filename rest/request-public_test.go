@@ -20,7 +20,7 @@ import (
 func TestMarkets(t *testing.T) {
 	c := rest.New(nil)
 	res, err := c.Markets(&markets.RequestForMarkets{
-		ProductCode: "XRPBULL/USDT",
+		ProductCode: "MNGO/USD",
 	})
 	assert.NoError(t, err)
 
@@ -55,8 +55,7 @@ func TestCandles(t *testing.T) {
 	c := rest.New(nil)
 	res, err := c.Candles(&markets.RequestForCandles{
 		ProductCode: "BTC-PERP",
-		Resolution:  900,
-		Limit:       2,                                         // optional
+		Resolution:  900,                                       // optional
 		Start:       time.Now().Add(-900 * time.Second).Unix(), // optional
 		End:         time.Now().Unix(),                         // optional
 	})
@@ -197,7 +196,6 @@ func TestMultiUnderlyingsRates(t *testing.T) {
 		-0.000398			XAUT-PERP		2020-04-05 00:00:00 +0000 +0000
 	*/
 }
-
 
 func TestSingleUnderlyingRates(t *testing.T) {
 	c := rest.New(nil)

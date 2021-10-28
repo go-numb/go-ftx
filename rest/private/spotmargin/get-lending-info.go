@@ -1,9 +1,10 @@
 package spotmargin
 
 import (
-	"encoding/json"
 	"net/http"
 )
+
+type RequestForLendingInfo struct{}
 
 type ResponseForLendingInfo []LendingInfo
 
@@ -14,8 +15,6 @@ type LendingInfo struct {
 	MinRate  float64 `json:"minRate"`
 	Offered  float64 `json:"offered"`
 }
-
-type RequestForLendingInfo struct{}
 
 func (req *RequestForLendingInfo) Path() string {
 	return "/spot_margin/lending_info"
@@ -30,9 +29,5 @@ func (req *RequestForLendingInfo) Query() string {
 }
 
 func (req *RequestForLendingInfo) Payload() []byte {
-	b, err := json.Marshal(req)
-	if err != nil {
-		return nil
-	}
-	return b
+	return nil
 }

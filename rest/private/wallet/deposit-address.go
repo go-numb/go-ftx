@@ -6,7 +6,8 @@ import (
 )
 
 type RequestForDepositAddress struct {
-	Coin string `json:"-"`
+	Coin    string `json:"-"`
+	Methods string `json:"-"`
 }
 
 type ResponseForDepositAddress struct {
@@ -15,7 +16,11 @@ type ResponseForDepositAddress struct {
 }
 
 func (req *RequestForDepositAddress) Path() string {
-	return fmt.Sprintf("/wallet/deposit_address/%s", req.Coin)
+	path := fmt.Sprintf("/wallet/deposit_address/%s", req.Coin)
+	if req.Methods != "" {
+		path = fmt.Sprintf("%s?method=%s", path, req.Methods)
+	}
+	return path
 }
 
 func (req *RequestForDepositAddress) Method() string {

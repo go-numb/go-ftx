@@ -6,6 +6,11 @@ import (
 	"time"
 )
 
+type RequestForLendingHistory struct {
+	StartTime time.Time `json:"start_time,omitempty"`
+	EndTime   time.Time `json:"end_time,omitempty"`
+}
+
 type ResponseForLendingHistory []LendingHistory
 
 type LendingHistory struct {
@@ -15,8 +20,6 @@ type LendingHistory struct {
 	Size float64   `json:"size"`
 	Time time.Time `json:"time"`
 }
-
-type RequestForLendingHistory struct{}
 
 func (req *RequestForLendingHistory) Path() string {
 	return "/spot_margin/lending_history"

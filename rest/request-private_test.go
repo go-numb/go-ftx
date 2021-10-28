@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/go-numb/go-ftx/auth"
 
@@ -85,7 +86,8 @@ func TestDepositAddress(t *testing.T) {
 	c := rest.New(auth.New(os.Getenv("FTXKEY"), os.Getenv("FTXSECRET")))
 
 	res, err := c.DepositAddress(&wallet.RequestForDepositAddress{
-		"BTC",
+		Coin:    "BTC",
+		Methods: "",
 	})
 	assert.NoError(t, err)
 
@@ -241,7 +243,7 @@ func TestOrderStatus(t *testing.T) {
 	c := rest.New(auth.New(os.Getenv("FTXKEY"), os.Getenv("FTXSECRET")))
 
 	res, err := c.OrderStatus(&orders.RequestForOrderStatus{
-		OrderID: "erafa",
+		OrderID: 000,
 		// prioritize clientID
 		ClientID: "",
 	})
@@ -254,7 +256,7 @@ func TestCancelByID(t *testing.T) {
 	c := rest.New(auth.New(os.Getenv("FTXKEY"), os.Getenv("FTXSECRET")))
 
 	res, err := c.CancelByID(&orders.RequestForCancelByID{
-		OrderID: "erafa",
+		OrderID: 000,
 		// prioritize clientID
 		ClientID: "",
 	})
@@ -269,6 +271,7 @@ func TestCancelAll(t *testing.T) {
 	res, err := c.CancelAll(&orders.RequestForCancelAll{
 		ProductCode: "",
 		// optionals
+		Side:                  "",
 		ConditionalOrdersOnly: false,
 		LimitOrdersOnly:       false,
 	})
@@ -311,7 +314,10 @@ func TestGetLendingRates(t *testing.T) {
 func TestGetLendingHistory(t *testing.T) {
 	c := rest.New(auth.New(os.Getenv("FTXKEY"), os.Getenv("FTXSECRET")))
 
-	res, err := c.GetLendingHistory(&spotmargin.RequestForLendingHistory{})
+	res, err := c.GetLendingHistory(&spotmargin.RequestForLendingHistory{
+		StartTime: time.Now().Add(-30 * time.Hour),
+		EndTime:   time.Now(),
+	})
 	assert.NoError(t, err)
 
 	fmt.Printf("%+v\n", res)
