@@ -1,16 +1,16 @@
 package futures
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/google/go-querystring/query"
 )
 
 type RequestForRates struct {
-	ProductCode string `json:"future,omitempty"`
-	Start       int64  `json:"start_time,omitempty"`
-	End         int64  `json:"end_time,omitempty"`
+	ProductCode string `url:"future,omitempty"`
+	Start       int64  `url:"start_time,omitempty"`
+	End         int64  `url:"end_time,omitempty"`
 }
 
 type ResponseForRates []Rate
@@ -29,7 +29,7 @@ type Rate struct {
 
 // Example : https://ftx.com/api/funding_rates?future=DEFI-PERP&start_time=1597687200&end_time=1597773600
 func (req *RequestForRates) Path() string {
-	return fmt.Sprintf("/funding_rates")
+	return "/funding_rates"
 }
 
 func (req *RequestForRates) Method() string {
@@ -37,17 +37,12 @@ func (req *RequestForRates) Method() string {
 }
 
 func (req *RequestForRates) Query() string {
-	// value, _ := query.Values(req)
-	// return value.Encode()
-	return ""
+	value, _ := query.Values(req)
+	return value.Encode()
 }
 
 func (req *RequestForRates) Payload() []byte {
-	b, err := json.Marshal(req)
-	if err != nil {
-		return nil
-	}
-	return b
+	return nil
 }
 
 func (a ResponseForRates) Len() int           { return len(a) }
