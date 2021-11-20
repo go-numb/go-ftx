@@ -28,6 +28,7 @@ type Market struct {
 	Bid            float64 `json:"bid"`
 	Price          float64 `json:"price"`
 	PriceIncrement float64 `json:"priceIncrement"`
+	MinProvideSize float64 `json:"minProvideSize"`
 
 	SizeIncrement  float64 `json:"sizeIncrement"`
 	ChangeBod      float64 `json:"changeBod"`
@@ -36,12 +37,15 @@ type Market struct {
 	QuoteVolume24H float64 `json:"quoteVolume24h"`
 	VolumeUsd24H   float64 `json:"volumeUsd24h"`
 
-	Enabled bool `json:"enabled"`
+	Enabled               bool `json:"enabled"`
+	PostOnly              bool `json:"postOnly"`
+	Restricted            bool `json:"postOnly"`
+	HighLeverageFeeExempt bool `json:"highLeverageFeeExempt"`
 }
 
 func (req *RequestForMarkets) Path() string {
 	if req.ProductCode != "" {
-		 // fmt.Println("/markets/%s", req.ProductCode)
+		// fmt.Println("/markets/%s", req.ProductCode)
 		return fmt.Sprintf("/markets/%s", req.ProductCode)
 	}
 	return "/markets"
