@@ -8,12 +8,18 @@ import (
 type RequestForPlaceTriggerOrder struct {
 	Market string `json:"market"`
 	// Type stop, trailingStop, takeProfit. default is stop
-	Type             string  `json:"type"`
-	Side             string  `json:"side"`
-	TriggerPrice     float64 `json:"triggerPrice"`
-	Size             float64 `json:"size"`
-	ReduceOnly       bool    `json:"reduceOnly,omitempty"`
-	RetryUntilFilled bool    `json:"retryUntilFilled,omitempty"`
+	Type string  `json:"type"`
+	Side string  `json:"side"`
+	Size float64 `json:"size"`
+
+	// Special Orders
+	TriggerPrice float64 `json:"triggerPrice,omitempty"`
+	// negative for "sell"; positive for "buy"
+	TrailValue float64 `json:"trailValue,omitempty"`
+	OrderPrice float64 `json:"orderPrice,omitempty"`
+
+	ReduceOnly       bool `json:"reduceOnly,omitempty"`
+	RetryUntilFilled bool `json:"retryUntilFilled,omitempty"`
 }
 
 type ResponseForPlaceTriggerOrder struct {
