@@ -8,7 +8,7 @@ import (
 
 type RequestForOrderStatus struct {
 	ClientID string
-	OrderID  string
+	OrderID  int
 }
 
 type ResponseForOrderStatus struct {
@@ -37,7 +37,7 @@ func (req *RequestForOrderStatus) Path() string {
 	if req.ClientID != "" {
 		return fmt.Sprintf("/orders/by_client_id/%s", req.ClientID)
 	}
-	return fmt.Sprintf("/orders/%s", req.OrderID)
+	return fmt.Sprintf("/orders/%d", req.OrderID)
 }
 
 func (req *RequestForOrderStatus) Method() string {

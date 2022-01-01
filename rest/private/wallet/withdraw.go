@@ -5,16 +5,18 @@ import (
 )
 
 type RequestForWithdraw struct {
-	Coin    string  `url:"coin"`
-	Size    float64 `url:"size"`
-	Address string  `url:"address"`
+	Coin    string  `json:"coin"`
+	Size    float64 `json:"size"`
+	Address string  `json:"address"`
 	// Optionals
-	Tag      string `url:"tag,omitempty"`
-	Password string `url:"password,omitempty"`
-	Code     int    `url:"code,omitempty"`
+	Tag      string `json:"tag,omitempty"`
+	Methods  string `json:"method,omitempty"`
+	Password string `json:"password,omitempty"`
+	Code     string `json:"code,omitempty"`
 }
 
-type ResponseForWithdraw Withdraw
+type ResponseForWithdraw struct {
+}
 
 func (req *RequestForWithdraw) Path() string {
 	return "/wallet/withdrawals"

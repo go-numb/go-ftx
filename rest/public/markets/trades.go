@@ -1,21 +1,21 @@
 package markets
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/go-numb/go-ftx/types"
-	"github.com/google/go-querystring/query"
 )
 
 // query
 // ?limit={limit}&start_time={start_time}&end_time={end_time}
 type RequestForTrades struct {
-	ProductCode string `url:"-"`
-	Limit       int    `url:"limit,omitempty"`
-	Start       int64  `url:"start,omitempty"`
-	End         int64  `url:"end,omitempty"`
+	ProductCode string `json:"-"`
+	Limit       int    `json:"limit,omitempty"`
+	Start       int64  `json:"start,omitempty"`
+	End         int64  `json:"end,omitempty"`
 }
 
 type ResponseForTrades []Trade
@@ -49,10 +49,15 @@ func (req *RequestForTrades) Method() string {
 }
 
 func (req *RequestForTrades) Query() string {
-	values, _ := query.Values(req)
-	return values.Encode()
+	// values, _ := query.Values(req)
+	// return values.Encode()
+	return ""
 }
 
 func (req *RequestForTrades) Payload() []byte {
-	return nil
+	b, err := json.Marshal(req)
+	if err != nil {
+		return nil
+	}
+	return b
 }

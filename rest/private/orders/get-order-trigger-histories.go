@@ -13,7 +13,6 @@ type RequestForOrderTriggerHistories struct {
 	Side        string `url:"side,omitempty"`
 	OrderType   string `url:"orderType,omitempty"`
 
-	Limit int   `url:"limit,omitempty"`
 	Start int64 `url:"start_time,omitempty"`
 	End   int64 `url:"end_time,omitempty"`
 }

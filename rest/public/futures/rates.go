@@ -1,7 +1,6 @@
 package futures
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -30,7 +29,7 @@ type Rate struct {
 
 // Example : https://ftx.com/api/funding_rates?future=DEFI-PERP&start_time=1597687200&end_time=1597773600
 func (req *RequestForRates) Path() string {
-	return fmt.Sprintf("/funding_rates")
+	return "/funding_rates"
 }
 
 func (req *RequestForRates) Method() string {
