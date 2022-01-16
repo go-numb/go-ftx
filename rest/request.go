@@ -29,7 +29,7 @@ func (p *Client) request(req Requester, results interface{}) error {
 	return nil
 }
 
-func signture(secret, body string) string {
+func signature(secret, body string) string {
 	mac := hmac.New(sha256.New, []byte(secret))
 	mac.Write([]byte(body))
 	return hex.EncodeToString(mac.Sum(nil))
@@ -57,7 +57,7 @@ func (p *Client) newRequest(r Requester) *fasthttp.Request {
 
 		req.Header.Set("Content-Type", "application/json")
 		req.Header.Set("FTX-KEY", p.Auth.Key)
-		req.Header.Set("FTX-SIGN", p.Auth.Signture(payload))
+		req.Header.Set("FTX-SIGN", p.Auth.Signature(payload))
 		req.Header.Set("FTX-TS", nonce)
 
 		// set id is there UseSubAccountID
