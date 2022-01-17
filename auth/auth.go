@@ -55,7 +55,7 @@ func New(key, secret string, subaccounts ...SubAccount) *Config {
 	return config
 }
 
-func (p *Config) Signture(body string) string {
+func (p *Config) Signature(body string) string {
 	mac := hmac.New(sha256.New, []byte(p.Secret))
 	mac.Write([]byte(body))
 	return hex.EncodeToString(mac.Sum(nil))
