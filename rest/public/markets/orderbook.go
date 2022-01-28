@@ -21,7 +21,10 @@ type Orderbook struct {
 }
 
 func (req *RequestForOrderbook) Path() string {
-	return fmt.Sprintf("/markets/%s/orderbook", req.ProductCode)
+	if req.Depth == 0 {
+		req.Depth = 20
+	}
+	return fmt.Sprintf("/markets/%s/orderbook?depth=%d", req.ProductCode, req.Depth)
 }
 
 func (req *RequestForOrderbook) Method() string {
