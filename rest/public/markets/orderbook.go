@@ -21,10 +21,7 @@ type Orderbook struct {
 }
 
 func (req *RequestForOrderbook) Path() string {
-	if req.Depth == 0 {
-		req.Depth = 20
-	}
-	return fmt.Sprintf("/markets/%s/orderbook?depth=%d", req.ProductCode, req.Depth)
+	return fmt.Sprintf("/markets/%s/orderbook", req.ProductCode)
 }
 
 func (req *RequestForOrderbook) Method() string {
@@ -34,7 +31,10 @@ func (req *RequestForOrderbook) Method() string {
 func (req *RequestForOrderbook) Query() string {
 	// values, _ := query.Values(req)
 	// return values.Encode()
-	return ""
+	if req.Depth == 0 {
+		req.Depth = 20
+	}
+	return fmt.Sprintf("depth=%d", req.Depth)
 }
 
 func (req *RequestForOrderbook) Payload() []byte {
