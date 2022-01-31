@@ -1,16 +1,18 @@
 package markets
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/google/go-querystring/query"
 )
 
 // query
 // ?depth={depth}
+// max 100, default 20
 type RequestForOrderbook struct {
-	ProductCode string `json:"-"`
-	Depth       int    `json:"depth,omitempty"`
+	ProductCode string `url:"-"`
+	Depth       int    `url:"depth,omitempty"`
 }
 
 type ResponseForOrderbook Orderbook
@@ -29,15 +31,13 @@ func (req *RequestForOrderbook) Method() string {
 }
 
 func (req *RequestForOrderbook) Query() string {
-	// values, _ := query.Values(req)
-	// return values.Encode()
-	return ""
+	if req.Depth == 0 {
+		req.Depth = 20
+	}
+	values, _ := query.Values(req)
+	return values.Encode()
 }
 
 func (req *RequestForOrderbook) Payload() []byte {
-	b, err := json.Marshal(req)
-	if err != nil {
-		return nil
-	}
-	return b
+	return nil
 }
