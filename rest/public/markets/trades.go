@@ -21,7 +21,7 @@ type RequestForTrades struct {
 type ResponseForTrades []Trade
 
 type Trade struct {
-	ID          int       `json:"id"`
+	ID          int64     `json:"id"`
 	Liquidation bool      `json:"liquidation"`
 	Price       float64   `json:"price"`
 	Side        string    `json:"side"`
