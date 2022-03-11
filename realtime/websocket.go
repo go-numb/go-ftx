@@ -61,7 +61,7 @@ type Orderbook struct {
 	// Action return update/partial
 	Action   string        `json:"action"`
 	Time     types.FtxTime `json:"time"`
-	Checksum int           `json:"checksum"`
+	Checksum int64         `json:"checksum"`
 }
 
 func subscribe(conn *websocket.Conn, channels, symbols []string) error {
