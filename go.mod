@@ -9,5 +9,5 @@ require (
 	github.com/gorilla/websocket v1.4.2
 	github.com/json-iterator/go v1.1.10
 	github.com/stretchr/testify v1.3.0
-	github.com/valyala/fasthttp v1.21.0
+	github.com/valyala/fasthttp v1.34.0
 )
