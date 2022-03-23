@@ -47,16 +47,16 @@ func (req *RequestForPositions) Method() string {
 }
 
 func (req *RequestForPositions) Query() string {
-	// if req.ShowAvgPrice {
-	// 	return "showAvgPrice=true"
-	// }
+	if req.ShowAvgPrice {
+		return "showAvgPrice=true"
+	}
 	return ""
 }
 
 func (req *RequestForPositions) Payload() []byte {
-	b, err := json.Marshal(req)
-	if err != nil {
-		return nil
-	}
-	return b
+	// b, err := json.Marshal(req)
+	// if err != nil {
+	// 	return nil
+	// }
+	return nil
 }
