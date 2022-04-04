@@ -30,16 +30,17 @@ type Market struct {
 	PriceIncrement float64 `json:"priceIncrement"`
 	MinProvideSize float64 `json:"minProvideSize"`
 
-	SizeIncrement  float64 `json:"sizeIncrement"`
-	ChangeBod      float64 `json:"changeBod"`
-	Change1H       float64 `json:"change1h"`
-	Change24H      float64 `json:"change24h"`
-	QuoteVolume24H float64 `json:"quoteVolume24h"`
-	VolumeUsd24H   float64 `json:"volumeUsd24h"`
+	SizeIncrement       float64 `json:"sizeIncrement"`
+	ChangeBod           float64 `json:"changeBod"`
+	Change1H            float64 `json:"change1h"`
+	Change24H           float64 `json:"change24h"`
+	QuoteVolume24H      float64 `json:"quoteVolume24h"`
+	VolumeUsd24H        float64 `json:"volumeUsd24h"`
+	LargeOrderThreshold float64 `json:"largeOrderThreshold"`
 
 	Enabled               bool `json:"enabled"`
 	PostOnly              bool `json:"postOnly"`
-	Restricted            bool `json:"postOnly"`
+	Restricted            bool `json:"restricted"`
 	HighLeverageFeeExempt bool `json:"highLeverageFeeExempt"`
 }
 
