@@ -90,7 +90,7 @@ func subscribe(conn *websocket.Conn, channels, symbols []string) error {
 	return nil
 }
 
-func unsubscribe(conn *websocket.Conn, channels, symbols []string) error {
+func unsubscribe(conn *websocket.Conn, channels, symbols []string, l *log.Logger) error {
 	if symbols != nil {
 		for i := range channels {
 			for j := range symbols {
@@ -113,6 +113,15 @@ func unsubscribe(conn *websocket.Conn, channels, symbols []string) error {
 			}
 		}
 	}
+
+	_, msg, err := conn.ReadMessage()
+	if err != nil {
+		l.Printf("[ERROR]: ws unsubscribed %s", err)
+		return err
+	}
+
+	l.Printf("[INFO]: ws unsubscribed msg %s\n", msg)
+
 	return nil
 }
 
@@ -151,11 +160,21 @@ func Connect(ctx context.Context, ch chan Response, channels, symbols []string, 
 
 	go func() {
 		defer conn.Close()
-		defer unsubscribe(conn, channels, symbols)
+		defer unsubscribe(conn, channels, symbols, l)
 
 	RESTART:
 		for {
 			var res Response
+
+			// Receive cancellation notification from the parent and execute CLOSE(unsubscribe->conn.Close). In this case RECONNECT is performed by the parent.
+			select {
+			case <-ctx.Done():
+				l.Printf("[INFO]: ws context done: %s", err)
+				return
+
+			default:
+			}
+
 			_, msg, err := conn.ReadMessage()
 			if err != nil {
 				l.Printf("[ERROR]: msg error: %+v", err)
@@ -267,11 +286,21 @@ func ConnectForPrivate(ctx context.Context, ch chan Response, key, secret string
 
 	go func() {
 		defer conn.Close()
-		defer unsubscribe(conn, channels, nil)
+		defer unsubscribe(conn, channels, nil, l)
 
 	RESTART:
 		for {
 			var res Response
+
+			// Receive cancellation notification from the parent and execute CLOSE(unsubscribe->conn.Close). In this case RECONNECT is performed by the parent.
+			select {
+			case <-ctx.Done():
+				l.Printf("[INFO]: ws context done: %s", err)
+				return
+
+			default:
+			}
+
 			_, msg, err := conn.ReadMessage()
 			if err != nil {
 				l.Printf("[ERROR]: msg error: %+v", err)
