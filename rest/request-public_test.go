@@ -44,11 +44,16 @@ func TestTrades(t *testing.T) {
 	c := rest.New(nil)
 	res, err := c.Trades(&markets.RequestForTrades{
 		ProductCode: "BTC-PERP",
-		Limit:       10,
+		Limit:       100,
+		Start:       time.Now().UTC().Add(-1 * time.Minute).Unix(),
+		End:         time.Now().UTC().Unix(),
 	})
 	assert.NoError(t, err)
 
-	fmt.Printf("%+v\n", res)
+	trades := *res
+	for i := 0; i < len(trades); i++ {
+		fmt.Printf("%#v\n", trades[i].Time.String())
+	}
 }
 
 func TestCandles(t *testing.T) {
