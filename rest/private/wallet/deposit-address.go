@@ -16,11 +16,7 @@ type ResponseForDepositAddress struct {
 }
 
 func (req *RequestForDepositAddress) Path() string {
-	path := fmt.Sprintf("/wallet/deposit_address/%s", req.Coin)
-	if req.Methods != "" {
-		path = fmt.Sprintf("%s?method=%s", path, req.Methods)
-	}
-	return path
+	return fmt.Sprintf("/wallet/deposit_address/%s", req.Coin)
 }
 
 func (req *RequestForDepositAddress) Method() string {
@@ -28,6 +24,9 @@ func (req *RequestForDepositAddress) Method() string {
 }
 
 func (req *RequestForDepositAddress) Query() string {
+	if req.Methods != "" {
+		return fmt.Sprintf("method=%s", req.Methods)
+	}
 	return ""
 }
 
