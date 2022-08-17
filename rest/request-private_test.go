@@ -7,18 +7,18 @@ import (
 	"testing"
 	"time"
 
-	"github.com/go-numb/go-ftx/auth"
+	"github.com/boyi/go-ftx/auth"
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/go-numb/go-ftx/rest"
-	"github.com/go-numb/go-ftx/rest/private/account"
-	"github.com/go-numb/go-ftx/rest/private/fills"
-	"github.com/go-numb/go-ftx/rest/private/orders"
-	"github.com/go-numb/go-ftx/rest/private/spotmargin"
-	"github.com/go-numb/go-ftx/rest/private/subaccount"
-	"github.com/go-numb/go-ftx/rest/private/wallet"
-	"github.com/go-numb/go-ftx/types"
+	"github.com/boyi/go-ftx/rest"
+	"github.com/boyi/go-ftx/rest/private/account"
+	"github.com/boyi/go-ftx/rest/private/fills"
+	"github.com/boyi/go-ftx/rest/private/orders"
+	"github.com/boyi/go-ftx/rest/private/spotmargin"
+	"github.com/boyi/go-ftx/rest/private/subaccount"
+	"github.com/boyi/go-ftx/rest/private/wallet"
+	"github.com/boyi/go-ftx/types"
 )
 
 func TestURIEncode(t *testing.T) {
@@ -315,8 +315,8 @@ func TestGetLendingHistory(t *testing.T) {
 	c := rest.New(auth.New(os.Getenv("FTXKEY"), os.Getenv("FTXSECRET")))
 
 	res, err := c.GetLendingHistory(&spotmargin.RequestForLendingHistory{
-		StartTime: time.Now().Add(-30 * time.Hour),
-		EndTime:   time.Now(),
+		StartTime: time.Now().Add(-30 * time.Hour).Unix(),
+		EndTime:   time.Now().Unix(),
 	})
 	assert.NoError(t, err)
 

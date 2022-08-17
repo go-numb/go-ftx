@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/go-numb/go-ftx/realtime"
+	"github.com/boyi/go-ftx/realtime"
 )
 
 func TestConnect(t *testing.T) {
