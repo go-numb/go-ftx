@@ -16,6 +16,15 @@ type RequestForWithdraw struct {
 }
 
 type ResponseForWithdraw struct {
+	Coin    string    `json:"coin"`
+	Address string    `json:"address"`
+	Tag     string    `json:"tag"`
+	Fee     float64   `json:"fee"`
+	ID      int64     `json:"id"`
+	Size    float64   `json:"size"`
+	Status  string    `json:"status"` // one of "requested", "processing", "complete", or "cancelled"
+	Time    time.Time `json:"time"`
+	TxID    string    `json:"txid"`
 }
 
 func (req *RequestForWithdraw) Path() string {
