@@ -2,6 +2,7 @@ package wallet
 
 import (
 	"net/http"
+	"time"
 )
 
 type RequestForWithdraw struct {
@@ -16,15 +17,15 @@ type RequestForWithdraw struct {
 }
 
 type ResponseForWithdraw struct {
-	Coin    string    `json:"coin"`
-	Address string    `json:"address"`
-	Tag     string    `json:"tag"`
-	Fee     float64   `json:"fee"`
-	ID      int64     `json:"id"`
-	Size    float64   `json:"size"`
-	Status  string    `json:"status"` // one of "requested", "processing", "complete", or "cancelled"
-	Time    time.Time `json:"time"`
-	TxID    string    `json:"txid"`
+	Coin    string    `json:"coin,omitempty"`
+	Address string    `json:"address,omitempty"`
+	Tag     string    `json:"tag,omitempty"`
+	Fee     float64   `json:"fee,omitempty"`
+	ID      int64     `json:"id,omitempty"`
+	Size    float64   `json:"size,omitempty"`
+	Status  string    `json:"status,omitempty"` // one of "requested", "processing", "complete", or "cancelled"
+	Time    time.Time `json:"time,omitempty"`
+	TxID    string    `json:"txid,omitempty"`
 }
 
 func (req *RequestForWithdraw) Path() string {
