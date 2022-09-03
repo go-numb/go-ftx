@@ -1,9 +1,6 @@
 package rest
 
 import (
-	"crypto/hmac"
-	"crypto/sha256"
-	"encoding/hex"
 	"fmt"
 	"net/url"
 	"time"
@@ -27,12 +24,6 @@ func (p *Client) request(req Requester, results interface{}) error {
 		return err
 	}
 	return nil
-}
-
-func signature(secret, body string) string {
-	mac := hmac.New(sha256.New, []byte(secret))
-	mac.Write([]byte(body))
-	return hex.EncodeToString(mac.Sum(nil))
 }
 
 func (p *Client) newRequest(r Requester) *fasthttp.Request {
