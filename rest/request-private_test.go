@@ -315,8 +315,8 @@ func TestGetLendingHistory(t *testing.T) {
 	c := rest.New(auth.New(os.Getenv("FTXKEY"), os.Getenv("FTXSECRET")))
 
 	res, err := c.GetLendingHistory(&spotmargin.RequestForLendingHistory{
-		StartTime: time.Now().Add(-30 * time.Hour),
-		EndTime:   time.Now(),
+		StartTime: time.Now().Add(-30 * time.Hour).Unix(),
+		EndTime:   time.Now().Unix(),
 	})
 	assert.NoError(t, err)
 

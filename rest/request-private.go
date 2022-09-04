@@ -2,6 +2,7 @@ package rest
 
 import (
 	"github.com/go-numb/go-ftx/rest/private/account"
+	"github.com/go-numb/go-ftx/rest/private/convert"
 	"github.com/go-numb/go-ftx/rest/private/fills"
 	"github.com/go-numb/go-ftx/rest/private/funding"
 	"github.com/go-numb/go-ftx/rest/private/orders"
@@ -306,6 +307,33 @@ func (p *Client) BalanceSubAccount(req *subaccount.RequestForBalanceSubAccount) 
 
 func (p *Client) TransferSubAccount(req *subaccount.RequestForTransferSubAccount) (*subaccount.ResponseForTransferSubAccount, error) {
 	results := new(subaccount.ResponseForTransferSubAccount)
+	if err := p.request(req, results); err != nil {
+		return nil, err
+	}
+	return results, nil
+}
+
+/*
+	# Convert
+*/
+func (p *Client) RequestConvertQuote(req *convert.RequestForRequestQuote) (*convert.ResponseForRequestQuote, error) {
+	results := new(convert.ResponseForRequestQuote)
+	if err := p.request(req, results); err != nil {
+		return nil, err
+	}
+	return results, nil
+}
+
+func (p *Client) GetConvertQuoteStatus(req *convert.RequestForQuoteStatus) (*convert.ResponseForQuoteStatus, error) {
+	results := new(convert.ResponseForQuoteStatus)
+	if err := p.request(req, results); err != nil {
+		return nil, err
+	}
+	return results, nil
+}
+
+func (p *Client) AcceptConvertQuote(req *convert.RequestForAcceptQuote) (*convert.ResponseForAcceptQuote, error) {
+	results := new(convert.ResponseForAcceptQuote)
 	if err := p.request(req, results); err != nil {
 		return nil, err
 	}
