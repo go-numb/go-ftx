@@ -5,10 +5,10 @@ import (
 	"os"
 	"testing"
 
-	"github.com/go-numb/go-ftx/auth"
-	"github.com/go-numb/go-ftx/rest"
-	"github.com/go-numb/go-ftx/rest/private/account"
-	"github.com/go-numb/go-ftx/rest/private/convert"
+	"github.com/boyi/go-ftx/auth"
+	"github.com/boyi/go-ftx/rest"
+	"github.com/boyi/go-ftx/rest/private/account"
+	"github.com/boyi/go-ftx/rest/private/convert"
 	"github.com/stretchr/testify/assert"
 )
 

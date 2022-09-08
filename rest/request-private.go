@@ -8,7 +8,9 @@ import (
 	"github.com/boyi/go-ftx/rest/private/spotmargin"
 	"github.com/boyi/go-ftx/rest/private/subaccount"
 	"github.com/boyi/go-ftx/rest/private/wallet"
+    "github.com/boyi/go-ftx/rest/private/convert"
 )
+
 
 func (p *Client) Information(req *account.RequestForInformation) (*account.ResponseForInformation, error) {
 	results := new(account.ResponseForInformation)
