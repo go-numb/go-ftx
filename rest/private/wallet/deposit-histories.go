@@ -6,6 +6,8 @@ import (
 )
 
 type RequestForDepositHistories struct {
+	StartTime time.Time `url:"start_time,omitempty"`
+	EndTime   time.Time `url:"end_time,omitempty"`
 }
 
 type ResponseForDepositHistories []History
