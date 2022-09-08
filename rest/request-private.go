@@ -311,3 +311,30 @@ func (p *Client) TransferSubAccount(req *subaccount.RequestForTransferSubAccount
 	}
 	return results, nil
 }
+
+/*
+	# Convert
+*/
+func (p *Client) RequestConvertQuote(req *convert.RequestForRequestQuote) (*convert.ResponseForRequestQuote, error) {
+	results := new(convert.ResponseForRequestQuote)
+	if err := p.request(req, results); err != nil {
+		return nil, err
+	}
+	return results, nil
+}
+
+func (p *Client) GetConvertQuoteStatus(req *convert.RequestForQuoteStatus) (*convert.ResponseForQuoteStatus, error) {
+	results := new(convert.ResponseForQuoteStatus)
+	if err := p.request(req, results); err != nil {
+		return nil, err
+	}
+	return results, nil
+}
+
+func (p *Client) AcceptConvertQuote(req *convert.RequestForAcceptQuote) (*convert.ResponseForAcceptQuote, error) {
+	results := new(convert.ResponseForAcceptQuote)
+	if err := p.request(req, results); err != nil {
+		return nil, err
+	}
+	return results, nil
+}
