@@ -29,6 +29,10 @@ type FutureForList struct {
 	OpenInterestUsd     float64 `json:"openInterestUsd"`
 	PositionLimitWeight float64 `json:"positionLimitWeight"`
 
+	ImfFactor float64 `json:"imfFactor"`
+        ImfWeight float64 `json:"imfWeight"`
+        MmfWeight float64 `json:"mmfWeight"`
+
 	PriceIncrement float64 `json:"priceIncrement"`
 	SizeIncrement  float64 `json:"sizeIncrement"`
 
