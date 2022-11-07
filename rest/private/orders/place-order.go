@@ -35,10 +35,10 @@ type ResponseForPlaceOrder struct {
 	RemainingSize float64 `json:"remainingSize"`
 	FilledSize    float64 `json:"filledSize"`
 
-	ID         int  `json:"id"`
-	Ioc        bool `json:"ioc"`
-	PostOnly   bool `json:"postOnly"`
-	ReduceOnly bool `json:"reduceOnly"`
+	ID         int64 `json:"id"`
+	Ioc        bool  `json:"ioc"`
+	PostOnly   bool  `json:"postOnly"`
+	ReduceOnly bool  `json:"reduceOnly"`
 
 	CreatedAt time.Time `json:"createdAt"`
 }
